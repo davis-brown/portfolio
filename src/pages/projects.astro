@@ -1,0 +1,190 @@
+---
+import Page from '../layouts/Page.astro';
+import Spine from '../components/Spine.astro';
+import Section from '../components/Section.astro';
+import SectionLabel from '../components/SectionLabel.astro';
+import Placeholder from '../components/Placeholder.astro';
+import InfoTile from '../components/InfoTile.astro';
+import { project, projectsPage, links } from '../data/site';
+---
+
+<Page
+  title="Projects"
+  description={project.summary}
+  path="~/projects"
+  active="Projects"
+>
+  <div class="spine-grid">
+    <!-- Hero -->
+    <Spine size={18} variant="accent" top={80} />
+    <section class="hero">
+      <p class="eyebrow">{projectsPage.eyebrow}</p>
+      <h1>{projectsPage.h1}</h1>
+      <p class="lead">{projectsPage.lead}</p>
+    </section>
+
+    <!-- Case study -->
+    <Spine size={14} variant="accent" top={8} />
+    <section class="case">
+      <SectionLabel text="Case study">
+        <span slot="right"><span class="dot">●</span> {project.statusLong}</span>
+      </SectionLabel>
+
+      <h3>{project.name}</h3>
+      <p class="case-summary">{project.summary}</p>
+
+      <Placeholder
+        caption="[ hero image — three app screens: map, court detail, check-in ]"
+        minHeight={460}
+        rounded
+        bordered
+        class="case-hero"
+      />
+
+      <div class="tiles">
+        {projectsPage.tiles.map((t) => <InfoTile term={t.term} value={t.value} />)}
+      </div>
+    </section>
+
+    <!-- The problem -->
+    <Section title="The problem">
+      {projectsPage.problem.map((p) => <p class="prose">{p}</p>)}
+    </Section>
+
+    <!-- How it's built -->
+    <Section title="How it’s built">
+      <div class="build">
+        {
+          projectsPage.build.map((b) => (
+            <div class="card pkg">
+              <div class="pkg-top">
+                <span class="pkg-folder">{b.folder}</span>
+                <span class="pkg-tech">{b.tech}</span>
+              </div>
+              <p class="pkg-body">{b.body}</p>
+            </div>
+          ))
+        }
+        <Placeholder
+          caption="[ architecture diagram — app → API → PostGIS, tiles from OpenFreeMap ]"
+          minHeight={300}
+          rounded
+          bordered
+        />
+      </div>
+    </Section>
+
+    <!-- Decisions -->
+    <Section title="Decisions that mattered">
+      <ol class="decisions">
+        {
+          projectsPage.decisions.map((d) => (
+            <li class="decision">
+              <span class="num">{d.n}</span>
+              <p>
+                <b>{d.lead}</b> — <span class="muted">{d.body}</span>
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+
+    <!-- Try it -->
+    <Section title="Try it" last>
+      <div class="try">
+        <a class="btn btn-primary" href={links.webApp}>Open the web app ↗</a>
+        <a class="btn btn-outline" href={links.appStore}>App Store ↗</a>
+        <a class="btn btn-outline" href={links.googlePlay}>Google Play ↗</a>
+        <a class="btn btn-outline" href={links.source}>Source on GitHub ↗</a>
+      </div>
+    </Section>
+  </div>
+</Page>
+
+<style>
+  .hero { padding: var(--s-64) 0 var(--s-56); }
+  .eyebrow { margin-bottom: var(--s-16); }
+  h1 {
+    font: 600 var(--t-64) / 1.02 var(--sans);
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .lead { margin-top: var(--s-20); }
+
+  /* ── Case study ───────────────────────────────────────────────────── */
+  .case { padding-bottom: var(--s-56); }
+  .case h3 {
+    font: 600 var(--t-56) / 1 var(--sans);
+    letter-spacing: -0.035em;
+    margin-bottom: var(--s-20);
+  }
+  .case-summary {
+    font: var(--t-20) / 1.55 var(--sans);
+    color: var(--mute);
+    max-width: 60ch;
+    margin-bottom: var(--s-32);
+  }
+  .case :global(.case-hero) { margin-bottom: var(--s-16); }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--s-16);
+    margin-bottom: var(--s-56);
+  }
+
+  .prose {
+    font: var(--t-18) / 1.6 var(--sans);
+    color: var(--mute);
+    max-width: 68ch;
+  }
+  .prose + .prose { margin-top: var(--s-16); }
+
+  /* ── How it's built ───────────────────────────────────────────────── */
+  .build { display: flex; flex-direction: column; gap: var(--s-16); }
+  .pkg { padding: var(--s-22); }
+  .pkg-top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-12);
+    font: var(--t-13) / 1.2 var(--mono);
+    margin-bottom: var(--s-10);
+  }
+  .pkg-folder { color: var(--acc); }
+  .pkg-tech { color: var(--mute); }
+  .pkg-body { font: var(--t-17) / 1.55 var(--sans); }
+
+  /* ── Decisions ────────────────────────────────────────────────────── */
+  .decisions { display: block; }
+  .decision {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: var(--s-16);
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .decision:first-child { padding-top: 0; }
+  .decision:last-child { border-bottom: 0; }
+  .num {
+    font: var(--t-13) / 1.7 var(--mono);
+    color: var(--acc);
+  }
+  .decision p { font: var(--t-17) / 1.55 var(--sans); }
+  .muted { color: var(--mute); }
+
+  .try { display: flex; flex-wrap: wrap; gap: var(--s-12); }
+
+  /* ── Responsive ───────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .hero { padding: var(--s-48) 0 var(--s-40); }
+    h1 { font-size: 40px; }
+    .case h3 { font-size: var(--t-36); }
+    .case-summary { font-size: var(--t-18); }
+    .tiles { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 34px; }
+    .tiles { grid-template-columns: 1fr; }
+    .try .btn { flex: 1 1 100%; justify-content: center; }
+  }
+</style>

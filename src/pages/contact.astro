@@ -1,0 +1,108 @@
+---
+import Page from '../layouts/Page.astro';
+import Spine from '../components/Spine.astro';
+import Section from '../components/Section.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site, contact, links } from '../data/site';
+
+const elsewhere = [
+  { label: 'github', value: 'GitHub ↗', href: links.github, download: false },
+  { label: 'linkedin', value: 'LinkedIn ↗', href: links.linkedin, download: false },
+  { label: 'résumé', value: 'Résumé (PDF) ↓', href: links.resume, download: true },
+];
+---
+
+<Page title="Contact" path="~/contact" active="Contact">
+  <div class="spine-grid">
+    <!-- Hero -->
+    <Spine size={18} variant="accent" top={80} />
+    <section class="hero">
+      <p class="eyebrow"><span class="dot">●</span> {contact.eyebrow}</p>
+      <h1>{contact.h1}</h1>
+      <a class="email" href={`mailto:${site.email}`}>{site.email}</a>
+    </section>
+
+    <!-- Form -->
+    <Section title="Send a note">
+      <ContactForm />
+    </Section>
+
+    <!-- Elsewhere -->
+    <Section title="Elsewhere" last>
+      <div class="rows">
+        {
+          elsewhere.map((row) => (
+            <a class="row" href={row.href} rel="me noopener" download={row.download || undefined}>
+              <span class="row-label">{row.label}</span>
+              <span class="row-value">{row.value}</span>
+            </a>
+          ))
+        }
+        <div class="row">
+          <span class="row-label">pull up</span>
+          <span class="row-value">
+            <a href={links.appStore}>App Store ↗</a> ·
+            <a href={links.googlePlay}>Google Play ↗</a> ·
+            <a href={links.webApp}>web ↗</a>
+          </span>
+        </div>
+      </div>
+    </Section>
+  </div>
+</Page>
+
+<style>
+  .hero { padding: var(--s-64) 0 var(--s-56); }
+  .eyebrow { margin-bottom: var(--s-16); }
+  h1 {
+    font: 600 var(--t-64) / 1.02 var(--sans);
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+    max-width: 16ch;
+    margin-bottom: var(--s-32);
+  }
+  .email {
+    font: 600 var(--t-56) / 1.1 var(--sans);
+    letter-spacing: -0.04em;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 10px;
+    text-decoration-color: var(--acc);
+    word-break: break-all;
+  }
+
+  .rows { display: block; }
+  .row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: var(--s-24);
+    align-items: center;
+    min-height: 56px;
+    padding: var(--s-8) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .row:last-child { border-bottom: 0; }
+  .row-label {
+    font: var(--t-13) / 1.4 var(--mono);
+    color: var(--mute);
+  }
+  .row-value { font: var(--t-17) / 1.5 var(--sans); }
+  a.row:hover .row-value { color: var(--acc); }
+
+  @media (max-width: 900px) {
+    .hero { padding: var(--s-48) 0 var(--s-40); }
+    h1 { font-size: 40px; }
+    .email { font-size: 32px; }
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 34px; }
+    .email { font-size: 24px; }
+    .row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      align-items: start;
+      min-height: 0;
+      padding: var(--s-14) 0;
+    }
+  }
+</style>

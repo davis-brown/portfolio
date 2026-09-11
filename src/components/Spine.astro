@@ -1,0 +1,71 @@
+---
+/**
+ * One cell of the "git log" commit spine (left grid column).
+ *
+ * The rail is a 2px line whose left edge sits at x=35px, so its centre is 36px;
+ * every node is centred on that with left = 36 - size/2. Those are the exact
+ * offsets in the reference (27 / 29 / 31), derived here so a new node size
+ * cannot land off-centre.
+ *
+ * `lineHeight` unset  → the rail runs the full height of the row.
+ * `lineHeight` set    → the rail stops there; used by the last section so the
+ *                       log terminates instead of running into the footer.
+ */
+interface Props {
+  /** Node diameter: 18 hero, 14 featured, 10 everything else. */
+  size?: 18 | 14 | 10;
+  /** accent = filled + halo, hollow = mute ring, mute = filled grey (terminal node). */
+  variant?: 'accent' | 'hollow' | 'mute';
+  /** Distance from the top of the row to the node's top edge. */
+  top?: number;
+  /** Stop the rail after this many px instead of running full height. */
+  lineHeight?: number;
+}
+
+const { size = 10, variant = 'hollow', top = 8, lineHeight } = Astro.props;
+
+const left = 36 - size / 2;
+
+const lineStyle = lineHeight === undefined ? 'bottom: 0;' : `height: ${lineHeight}px;`;
+
+const nodeStyle = [
+  `left: ${left}px`,
+  `top: ${top}px`,
+  `width: ${size}px`,
+  `height: ${size}px`,
+].join('; ');
+---
+
+<div class="spine" aria-hidden="true">
+  <span class="line" style={lineStyle}></span>
+  <span class:list={['node', variant]} style={nodeStyle}></span>
+</div>
+
+<style>
+  .spine {
+    position: relative;
+  }
+  .line {
+    position: absolute;
+    left: 35px;
+    top: 0;
+    width: 2px;
+    background: var(--line);
+  }
+  .node {
+    position: absolute;
+    border-radius: 50%;
+  }
+  /* The halo punches the rail out from behind the node. */
+  .node.accent {
+    background: var(--acc);
+    box-shadow: 0 0 0 6px var(--bg);
+  }
+  .node.hollow {
+    border: 2px solid var(--mute);
+    background: var(--bg);
+  }
+  .node.mute {
+    background: var(--mute);
+  }
+</style>

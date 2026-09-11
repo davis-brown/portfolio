@@ -1,0 +1,20 @@
+---
+/** Small bordered dl card: mono term over a 15px value. */
+interface Props { term: string; value: string; }
+const { term, value } = Astro.props;
+---
+
+<dl class="tile card">
+  <dt>{term}</dt>
+  <dd>{value}</dd>
+</dl>
+
+<style>
+  .tile { padding: var(--s-16) 18px; }
+  dt {
+    font: var(--t-13) / 1.2 var(--mono);
+    color: var(--mute);
+    margin-bottom: 6px;
+  }
+  dd { font: var(--t-15) / 1.5 var(--sans); }
+</style>

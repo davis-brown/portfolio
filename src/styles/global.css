@@ -1,0 +1,289 @@
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
+
+:root {
+  /* Tokyo Night — dark, the default */
+  --bg: #1a1b26;
+  --bg2: #24283b;
+  --line: rgba(169, 177, 214, 0.16);
+  --ink: #c0caf5;
+  --mute: #9aa5ce;
+  --acc: #7aa2f7;
+  --acc-ink: #1a1b26;
+  --stripe: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 6px, transparent 6px 14px);
+
+  /* Syntax colors used by the terminal + code samples */
+  --ok: #9ece6a;
+  --warn: #ff9e64;
+  --purple: #bb9af7;
+
+  /* Type scale */
+  --t-80: 80px; --t-64: 64px; --t-56: 56px; --t-48: 48px; --t-36: 36px;
+  --t-28: 28px; --t-24: 24px; --t-22: 22px; --t-20: 20px; --t-18: 18px;
+  --t-17: 17px; --t-16: 16px; --t-15: 15px; --t-14: 14px; --t-13: 13px; --t-12: 12px;
+
+  /* Spacing — 8-based */
+  --s-8: 8px;   --s-10: 10px; --s-12: 12px; --s-14: 14px; --s-16: 16px;
+  --s-20: 20px; --s-22: 22px; --s-24: 24px; --s-28: 28px; --s-32: 32px;
+  --s-36: 36px; --s-40: 40px; --s-56: 56px; --s-64: 64px; --s-72: 72px;
+  --s-80: 80px; --s-88: 88px;
+
+  /* Radii — 3 chips, 4 buttons/pills, 6 cards */
+  --r-chip: 3px;
+  --r-btn: 4px;
+  --r-card: 6px;
+
+  /* Layout */
+  --maxw: 1180px;
+  --gutter: 40px;
+  --spine-col: 72px;
+  --header-h: 64px;
+
+  --sans: 'Instrument Sans Variable', 'Instrument Sans', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  /* Tokyo Night Day, with three values darkened to clear WCAG AA (4.5:1)
+     against --bg. The canonical palette does not: --mute #5a5f78 is 4.33:1,
+     --acc #2e7de9 is 2.77:1 (and only 3.32:1 for --acc-ink on a filled accent
+     button), --warn #b15c00 is 3.29:1. Accent carries 15-16px link text, so the
+     3:1 large-text allowance does not apply. Dark mode already passes. */
+  --bg: #d5d6db;
+  --bg2: #e9e9ed;
+  --line: rgba(52, 59, 88, 0.18);
+  --ink: #343b58;
+  --mute: #54596f;  /* canonical: #5a5f78 */
+  --acc: #1a54a8;   /* canonical: #2e7de9 */
+  --acc-ink: #e9e9ed;
+  --stripe: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.06) 0 6px, transparent 6px 14px);
+
+  --ok: #4a6330;    /* canonical: #587539 */
+  --warn: #8f4a00;  /* canonical: #b15c00 */
+  --purple: #7a3ad1;
+
+  color-scheme: light;
+}
+
+/* Optional accent variants — wired but unused; flip with data-accent on <html>. */
+[data-accent='purple'] { --acc: #bb9af7; }
+[data-accent='cyan']   { --acc: #7dcfff; }
+[data-accent='green']  { --acc: #9ece6a; }
+[data-accent='orange'] { --acc: #ff9e64; }
+/* Light alt accents, darkened to AA the same way (canonical values noted).
+   Purple is the one that cannot reach 4.5:1 without leaving the hue behind. */
+[data-theme='light'][data-accent='purple'] { --acc: #6a30bd; } /* canonical: #9854f1 */
+[data-theme='light'][data-accent='cyan']   { --acc: #00627f; } /* canonical: #007197 */
+[data-theme='light'][data-accent='green']  { --acc: #4a6330; } /* canonical: #587539 */
+[data-theme='light'][data-accent='orange'] { --acc: #8f4a00; } /* canonical: #b15c00 */
+
+/* ==========================================================================
+   Reset + base
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--t-16);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--acc); }
+
+h1, h2, h3, h4, p, dl, dd, figure { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+img, svg { display: block; max-width: 100%; }
+button, input, textarea { font: inherit; color: inherit; }
+
+/* The reference defines no focus style at all. Keyboard users need one. */
+:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--acc); color: var(--acc-ink); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Skip link — appears on first Tab. */
+.skip-link {
+  position: absolute; left: var(--s-40); top: -100px; z-index: 10;
+  background: var(--acc); color: var(--acc-ink);
+  padding: 10px 16px; border-radius: var(--r-btn);
+  font: 600 var(--t-15) / 1 var(--sans);
+  transition: top 0.15s ease;
+}
+.skip-link:focus { top: 12px; color: var(--acc-ink); }
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes pulse {
+  0%   { transform: scale(1);   opacity: 0.9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+@keyframes blink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   Layout primitives
+   ========================================================================== */
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* The commit-spine grid: 72px rail + content. */
+.spine-grid {
+  display: grid;
+  grid-template-columns: var(--spine-col) 1fr;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* Grid items default to min-width:auto, so one wide child — a <pre>, a long
+   table — props the column open and the whole page scrolls sideways. Letting
+   these shrink is what makes the inner scrollers (pre, .scroll-x) actually
+   scroll instead of overflowing the page. */
+.spine-grid > * {
+  min-width: 0;
+}
+
+/* Anchor targets clear the sticky header. */
+[id] { scroll-margin-top: var(--s-80); }
+
+/* ==========================================================================
+   Shared type + component primitives
+   ========================================================================== */
+
+.eyebrow {
+  font: var(--t-13) / 1.4 var(--mono);
+  color: var(--mute);
+}
+
+.lead {
+  font: var(--t-20) / 1.55 var(--sans);
+  color: var(--mute);
+  max-width: 56ch;
+}
+
+.section-label {
+  font: 600 var(--t-15) / 1.2 var(--mono);
+  color: var(--mute);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-16);
+}
+
+.dot { color: var(--acc); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-10);
+  height: 52px;
+  padding: 0 22px;
+  border-radius: var(--r-btn);
+  font: var(--t-16) / 1 var(--sans);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--acc);
+  color: var(--acc-ink);
+  font-weight: 600;
+}
+.btn-primary:hover { color: var(--acc-ink); opacity: 0.9; }
+.btn-outline { border: 1px solid var(--line); }
+.btn-outline:hover { border-color: var(--acc); }
+
+/* Pills — 44px, used for links out */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 var(--s-16);
+  border: 1px solid var(--line);
+  border-radius: var(--r-btn);
+  font: var(--t-15) / 1 var(--sans);
+  white-space: nowrap;
+}
+.pill:hover { border-color: var(--acc); }
+
+/* Chips — mono metadata tags */
+.chip {
+  border: 1px solid var(--line);
+  padding: 6px var(--s-10);
+  border-radius: var(--r-chip);
+  font: var(--t-13) / 1.2 var(--mono);
+  color: var(--mute);
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+}
+a.card:hover { border-color: var(--acc); }
+
+.accent-link {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  font: 600 var(--t-16) / 1 var(--sans);
+  color: var(--acc);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  :root { --gutter: 24px; }
+
+  .spine-grid {
+    grid-template-columns: 1fr;
+  }
+  /* The spine is decorative; drop it rather than reflow it. */
+  .spine { display: none; }
+}
+
+@media (max-width: 600px) {
+  :root { --gutter: 20px; }
+}

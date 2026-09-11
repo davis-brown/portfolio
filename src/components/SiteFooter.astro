@@ -1,0 +1,29 @@
+---
+import { site } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="inner">
+    <span>© {site.year} {site.name}</span>
+    <span>{site.location}</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+  }
+  .inner {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-16);
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: var(--s-14) var(--gutter);
+    font: var(--t-13) / 1.5 var(--sans);
+    color: var(--mute);
+  }
+  @media (max-width: 600px) {
+    .inner { flex-direction: column; gap: 4px; }
+  }
+</style>
