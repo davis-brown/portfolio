@@ -7,16 +7,20 @@
 import { contact } from '../data/site';
 
 const endpoint = contact.formEndpoint;
+const configured = Boolean(contact.accessKey);
 ---
 
 <form
   class="form"
   method="POST"
-  action={endpoint || undefined}
+  action={endpoint}
   data-contact-form
-  data-configured={endpoint ? 'true' : 'false'}
+  data-configured={configured ? 'true' : 'false'}
   novalidate
 >
+  <input type="hidden" name="access_key" value={contact.accessKey} />
+  <input type="hidden" name="subject" value={contact.formSubject} />
+  <input type="hidden" name="from_name" value="davisbrown.dev" />
   <div class="field">
     <label for="cf-name">name</label>
     <input id="cf-name" name="name" type="text" placeholder="Your name" required autocomplete="name" />
@@ -39,10 +43,10 @@ const endpoint = contact.formEndpoint;
     <p class="error" data-error-for="message" hidden></p>
   </div>
 
-  {/* Honeypot — bots fill it, people never see it. */}
+  {/* Web3Forms' honeypot: a checked box means a bot filled the form. */}
   <div class="hp" aria-hidden="true">
-    <label for="cf-company">company</label>
-    <input id="cf-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+    <label for="cf-botcheck">company</label>
+    <input id="cf-botcheck" name="botcheck" type="checkbox" tabindex="-1" autocomplete="off" />
   </div>
 
   <div class="foot wide">
@@ -194,7 +198,7 @@ const endpoint = contact.formEndpoint;
       if (form.dataset.configured !== 'true') {
         e.preventDefault();
         status.textContent =
-          'Form endpoint not configured yet — set contact.formEndpoint in src/data/site.ts.';
+          'Form not configured yet — set contact.accessKey in src/data/site.ts.';
         status.hidden = false;
         return;
       }
@@ -209,10 +213,9 @@ const endpoint = contact.formEndpoint;
           body: new FormData(form),
           headers: { Accept: 'application/json' },
         });
-        if (!res.ok) {
-          // The endpoint returns { ok, error } — prefer its message.
-          const detail = await res.json().catch(() => null);
-          throw new Error(detail?.error || String(res.status));
+        const detail = await res.json().catch(() => null);
+        if (!res.ok || detail?.success === false) {
+          throw new Error(detail?.message || String(res.status));
         }
         form.hidden = true;
         success.hidden = false;

@@ -11,7 +11,8 @@ Personal portfolio and case study site.
 | **Plain CSS + custom properties** | The design is a token system (`--bg`, `--acc`, `--line`…) redefined under `[data-theme="light"]`. No framework in between. |
 | **MDX content collections** | `/writing` posts with typed frontmatter. |
 | **@fontsource-variable** | Instrument Sans + JetBrains Mono, self-hosted — no render-blocking Google Fonts request. |
-| **Cloudflare Workers + static assets** | Serves `dist/` (free and unlimited) and runs one endpoint, `/api/contact`, which sends mail via the Email Service binding. |
+| **Cloudflare Workers + static assets** | Serves `dist/` — free and unlimited. Assets-only: no Worker code runs. |
+| **Web3Forms** | Contact form delivery. Keeps the site fully static and leaves DNS alone. |
 
 No UI library, no CSS-in-JS, no state manager. The terminal and theme toggle are
 plain inline scripts; nothing is hydrated.
@@ -22,13 +23,13 @@ plain inline scripts; nothing is hydrated.
 npm install
 npm run dev       # Astro dev server, localhost:4321 (no Worker)
 npm run build     # -> dist/
-npm run preview   # build + wrangler dev, localhost:8787 (Worker + assets)
+npm run preview   # build + wrangler dev, localhost:8787 (assets as deployed)
 npm run deploy    # build + wrangler deploy
-npm run check     # wrangler types + astro check + tsc on the Worker
+npm run check     # astro check
 ```
 
-Use `npm run dev` for design work and `npm run preview` when you need the
-contact form, the 404 route or `_headers` — those only exist under the Worker.
+Use `npm run dev` for design work and `npm run preview` when you need the 404
+route or `_headers` — those are applied by the assets runtime, not by Astro.
 
 ## Where the content lives
 
@@ -51,41 +52,35 @@ renders visibly as such in the browser.
 
 ### Wiring the contact form
 
-The form posts to `/api/contact`, handled by [`src/worker.ts`](src/worker.ts),
-which sends through the Cloudflare Email Service binding. No third party, no API
-key. It is free: sends to a **verified destination address** do not count toward
-any quota on any plan.
+The form posts to [Web3Forms](https://web3forms.com). Create a key there with
+the address you want submissions delivered to, then set `contact.accessKey` in
+[`src/data/site.ts`](src/data/site.ts). The key is designed to be public — it
+only authorises delivery to the address you registered — so committing it is
+fine. Until it is set, the form validates and reports that it is not configured.
 
-Before it will deliver, do this once in the Cloudflare dashboard:
+The form posts normally with JS disabled; the script adds inline validation and
+swaps in the success state without a page load. A `botcheck` honeypot is
+included.
 
-1. **Email Routing** on `davisbrown.dev` (Compute > Email Service > Email
-   Routing > Onboard Domain). This adds the MX/SPF/DKIM records.
-2. **Verify your inbox** under Destination Addresses and click the link in the
-   confirmation email. Until you do, sends fail.
-3. Put that address in [`wrangler.jsonc`](wrangler.jsonc) in **both**
-   `vars.CONTACT_TO` and `send_email[0].destination_address`. The var addresses
-   the mail; the binding restriction is what enforces that it cannot go
-   anywhere else.
-4. Check `vars.CONTACT_FROM` is on a domain you have onboarded — you may only
-   send *from* your own routing domains.
-
-The form still posts normally with JS disabled; the script adds inline
-validation and the success state. `wrangler dev` simulates sends and writes the
-message body to `.wrangler/tmp/email/`, so you can test without delivering.
+**Why not Cloudflare Email Service:** the free send path requires Email Routing
+on the apex domain, and `davisbrown.dev` already points its MX at SimpleLogin —
+enabling it would break `contact@davisbrown.dev`. Email Sending on its own would
+avoid that (it only touches a `cf-bounce` subdomain) but needs Workers Paid.
 
 ## Deploying (Cloudflare Workers)
 
 `npm run deploy`, or connect the repo to Workers Builds with build command
-`npm run build`. The site is a Worker serving static assets: asset requests are
-free and unlimited, and only `/api/contact` invokes code.
+`npm run build`. The Worker declares no `main`, so it is purely a static asset
+host — every request is free and no code runs.
 
 Set `site` in [`astro.config.mjs`](astro.config.mjs) to the real domain before
 launch — the sitemap, RSS feed and canonical URLs are built from it.
 
-**Why Workers and not Pages:** Pages Functions support only a subset of
-bindings, and email is not among them. Pages is not deprecated and would work
-via the Email Service REST API, but that means creating and rotating a
-Cloudflare API token. The binding needs no credential.
+**Why Workers and not Pages:** largely historical — the original plan used the
+Email Service binding, which Pages Functions cannot bind. Now that the form goes
+through Web3Forms, either platform would serve this equally well. Workers stays
+because it is set up, and its observability is better if a dynamic endpoint is
+ever added back.
 
 ## Notes for whoever picks this up
 
@@ -103,11 +98,5 @@ Cloudflare API token. The binding needs no credential.
   west of UTC renders the previous day.
 - **The light palette is darkened from canonical Tokyo Night Day** to reach
   WCAG AA. See the comment in `global.css`; the original values are noted there.
-- **There are two tsconfigs.** The Workers runtime declares globals (`Response`,
-  `ReadableStream`) that shadow the DOM lib and break the browser-side scripts,
-  so `tsconfig.json` excludes the Worker and `tsconfig.worker.json` typechecks it
-  alone. `npm run check` runs both.
-- **`_headers` does not apply to Worker responses**, only to static assets. The
-  `/api/contact` response sets its own headers.
-- **`worker-configuration.d.ts` is generated** by `wrangler types` and gitignored;
-  `npm run check` regenerates it.
+- **`_headers` applies to static assets only.** If Worker code is ever added
+  back, its responses must set their own headers.

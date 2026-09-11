@@ -1,40 +1,16 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "davisbrown-portfolio",
-  "main": "./src/worker.ts",
-  "compatibility_date": "2026-09-08",
+  "compatibility_date": "2026-09-11",
 
+  // Assets-only Worker: no `main`, so no code runs at all. Every request is
+  // served straight from Astro's static output, free and unlimited.
+  // The contact form posts to Web3Forms rather than a server endpoint here,
+  // because the free Cloudflare send path needs Email Routing on the apex —
+  // which would displace SimpleLogin and break contact@davisbrown.dev.
   "assets": {
-    // Astro's static output. Everything here is served directly, free and
-    // unlimited — the Worker only runs for the routes named in run_worker_first.
     "directory": "./dist",
-    "binding": "ASSETS",
-    "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*"]
-  },
-
-  // Email Service binding. Sends to a *verified destination address* are free on
-  // every plan and do not count against any quota — which is the whole reason
-  // this is a Worker rather than a Pages project (Pages cannot bind email).
-  //
-  // `destination_address` pins the recipient in configuration, so a bug or an
-  // injected field cannot make this binding mail anyone else.
-  "send_email": [
-    {
-      "name": "EMAIL",
-      // PLACEHOLDER — the inbox you verified under
-      // Email Service > Email Routing > Destination Addresses.
-      // Keep this in sync with vars.CONTACT_TO below: the var addresses the
-      // mail, this restriction is what actually enforces where it may go.
-      "destination_address": "you@example.com"
-    }
-  ],
-
-  "vars": {
-    // PLACEHOLDER — same verified inbox as destination_address above.
-    "CONTACT_TO": "you@example.com",
-    // Sender. Must be on a domain onboarded to Email Routing.
-    "CONTACT_FROM": "forms@davisbrown.dev"
+    "not_found_handling": "404-page"
   },
 
   "observability": {
