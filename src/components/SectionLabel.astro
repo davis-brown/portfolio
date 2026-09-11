@@ -1,0 +1,24 @@
+---
+/** Mono uppercase section label, with an optional right-hand slot. */
+interface Props {
+  text: string;
+  id?: string;
+  /** Bottom margin; 20px everywhere except the Writing list, which uses 8px. */
+  mb?: number;
+}
+const { text, id, mb = 20 } = Astro.props;
+const hasRight = Astro.slots.has('right');
+---
+
+<div class="label-row" style={`margin-bottom: ${mb}px`}>
+  <h2 class="section-label" id={id}>{text}</h2>
+  {hasRight && <div class="right"><slot name="right" /></div>}
+</div>
+
+<style>
+  .right {
+    font: var(--t-13) / 1.2 var(--mono);
+    color: var(--mute);
+    white-space: nowrap;
+  }
+</style>

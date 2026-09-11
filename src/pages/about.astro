@@ -1,0 +1,119 @@
+---
+import Page from '../layouts/Page.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import Placeholder from '../components/Placeholder.astro';
+import { about, links } from '../data/site';
+---
+
+<Page title="About" path="~/about" active="About">
+  <div class="spine-grid">
+    <PageHero eyebrow={about.eyebrow} title={about.h1}>
+      {about.bio.map((p) => <p class="bio">{p}</p>)}
+      <div class="cta">
+        <a class="btn btn-primary" href="/contact">Get in touch →</a>
+        <a class="btn btn-outline" href={links.resume} download>Résumé (PDF) ↓</a>
+      </div>
+      <Placeholder slot="aside" caption="[ portrait ]" aspect="4/5" rounded bordered />
+    </PageHero>
+
+    <Section title="Stack">
+      <dl class="stack">
+        {
+          about.stack.map((row) => (
+            <>
+              <dt>{row.term}</dt>
+              <dd>{row.value}</dd>
+            </>
+          ))
+        }
+      </dl>
+    </Section>
+
+    <Section title="Experience">
+      <div class="rows">
+        {
+          about.experience.map((job) => (
+            <div class="row">
+              <span class="row-label">{job.years}</span>
+              <div>
+                <div class="row-role">{job.role}</div>
+                <div class="row-note">{job.note}</div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </Section>
+
+    <Section title="Now" last>
+      <p class="now"><span class="dot">●</span> {about.now}</p>
+      <p class="now-note">{about.nowNote}</p>
+    </Section>
+  </div>
+</Page>
+
+<style>
+  .bio {
+    font: var(--t-20) / 1.55 var(--sans);
+    color: var(--mute);
+    max-width: 56ch;
+  }
+  .bio:first-of-type { margin-top: var(--s-20); }
+  .bio + .bio { margin-top: var(--s-16); }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-12);
+    margin-top: var(--s-32);
+  }
+
+  .stack {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-14) var(--s-28);
+  }
+  .stack dt {
+    font: var(--t-13) / 1.5 var(--mono);
+    color: var(--mute);
+    padding-top: 4px;
+  }
+  .stack dd { font: var(--t-17) / 1.5 var(--sans); }
+
+  .rows { display: block; }
+  .row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: var(--s-24);
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .row:first-child { padding-top: 0; }
+  .row:last-child { border-bottom: 0; }
+  .row-label {
+    font: var(--t-13) / 1.6 var(--mono);
+    color: var(--mute);
+  }
+  .row-role { font: 600 var(--t-17) / 1.4 var(--sans); }
+  .row-note {
+    font: var(--t-15) / 1.5 var(--sans);
+    color: var(--mute);
+    margin-top: 4px;
+  }
+
+  .now { font: var(--t-20) / 1.5 var(--sans); }
+  .now-note {
+    font: var(--t-17) / 1.6 var(--sans);
+    color: var(--mute);
+    margin-top: var(--s-10);
+    max-width: 56ch;
+  }
+
+  @media (max-width: 900px) {
+    .bio { font-size: var(--t-18); }
+  }
+  @media (max-width: 600px) {
+    .row { grid-template-columns: 1fr; gap: 6px; }
+    .cta .btn { flex: 1 1 100%; justify-content: center; }
+  }
+</style>

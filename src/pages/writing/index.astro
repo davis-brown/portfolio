@@ -1,0 +1,177 @@
+---
+import { getCollection } from 'astro:content';
+import Page from '../../layouts/Page.astro';
+import Spine from '../../components/Spine.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import { writing } from '../../data/site';
+import { formatDate } from '../../lib/date';
+
+const all = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const [featured, ...rest] = all;
+
+const fmt = formatDate;
+---
+
+<Page title="Writing" path="~/writing" active="Writing">
+  <div class="spine-grid">
+    <!-- Hero -->
+    <Spine size={18} variant="accent" top={80} />
+    <section class="hero">
+      <div>
+        <p class="eyebrow">{all.length} posts · {writing.eyebrowSuffix}</p>
+        <h1>{writing.h1}</h1>
+      </div>
+      <div class="hero-pills">
+        <a class="pill" href="/rss.xml">RSS ↗</a>
+        <a class="pill" href="#newsletter">Newsletter</a>
+      </div>
+    </section>
+
+    <!-- Latest -->
+    <Spine size={14} variant="accent" top={8} />
+    <section class="latest">
+      <SectionLabel text="Latest" />
+      {
+        featured && (
+          <a class="card feature" href={`/writing/${featured.id}`}>
+            <div class="feature-body">
+              <div class="meta">
+                {fmt(featured.data.date)} · {featured.data.minutes} min
+              </div>
+              <h3>{featured.data.title}</h3>
+              <p class="summary">{featured.data.summary}</p>
+              <span class="accent-link">Read →</span>
+            </div>
+            <Placeholder
+              caption="[ cover image ]"
+              src={featured.data.cover}
+              minHeight={300}
+              class="feature-cover"
+            />
+          </a>
+        )
+      }
+    </section>
+
+    <!-- All posts -->
+    <Spine size={10} variant="mute" top={8} lineHeight={20} />
+    <section class="all">
+      <SectionLabel text="All posts" />
+      {
+        rest.map((post) => (
+          <a class="post-row" href={`/writing/${post.id}`}>
+            <div>
+              <div class="post-title">{post.data.title}</div>
+              <div class="post-summary">{post.data.summary}</div>
+            </div>
+            <div class="post-meta">
+              {fmt(post.data.date)} · {post.data.minutes} min
+            </div>
+          </a>
+        ))
+      }
+    </section>
+  </div>
+</Page>
+
+<style>
+  .hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--s-24);
+    padding: var(--s-64) 0 var(--s-56);
+  }
+  .eyebrow { margin-bottom: var(--s-16); }
+  h1 {
+    font: 600 var(--t-64) / 1.02 var(--sans);
+    letter-spacing: -0.04em;
+  }
+  .hero-pills { display: flex; gap: var(--s-8); flex: none; }
+
+  /* ── Featured ─────────────────────────────────────────────────────── */
+  .latest { padding-bottom: var(--s-56); }
+  .feature {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    overflow: hidden;
+  }
+  .feature:hover { color: inherit; }
+  .feature-body {
+    padding: var(--s-32);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-12);
+  }
+  .meta {
+    font: var(--t-14) / 1.2 var(--mono);
+    color: var(--mute);
+  }
+  .feature h3 {
+    font: 600 var(--t-36) / 1.15 var(--sans);
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .summary {
+    font: var(--t-18) / 1.55 var(--sans);
+    color: var(--mute);
+  }
+  .feature .accent-link { margin-top: auto; }
+  .feature :global(.feature-cover) { border-left: 1px solid var(--line); }
+
+  /* ── All posts ────────────────────────────────────────────────────── */
+  .all { padding-bottom: var(--s-64); }
+  .post-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--s-24);
+    align-items: baseline;
+    padding: var(--s-24) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .post-row:last-child { border-bottom: 0; }
+  .post-title {
+    font: 500 var(--t-24) / 1.3 var(--sans);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .post-summary {
+    font: var(--t-16) / 1.5 var(--sans);
+    color: var(--mute);
+    margin-top: 6px;
+    max-width: 66ch;
+  }
+  .post-meta {
+    font: var(--t-14) / 1.2 var(--mono);
+    color: var(--mute);
+    white-space: nowrap;
+  }
+  .post-row:hover .post-summary,
+  .post-row:hover .post-meta { color: var(--acc); }
+
+  @media (max-width: 900px) {
+    .hero {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: var(--s-48) 0 var(--s-40);
+    }
+    h1 { font-size: 40px; }
+    .feature { grid-template-columns: 1fr; }
+    .feature :global(.feature-cover) {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+      order: -1;
+      min-height: 200px;
+    }
+    .feature h3 { font-size: var(--t-28); }
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 34px; }
+    .post-row { grid-template-columns: 1fr; gap: 8px; }
+    .post-title { font-size: var(--t-20); }
+  }
+</style>

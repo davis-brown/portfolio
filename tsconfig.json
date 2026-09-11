@@ -1,0 +1,13 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": [
+    "dist",
+    ".wrangler",
+    // The Workers runtime declares globals (Response, ReadableStream, …) that
+    // shadow the DOM lib and break the browser-side scripts. The Worker is
+    // typechecked separately by tsconfig.worker.json.
+    "src/worker.ts",
+    "worker-configuration.d.ts"
+  ]
+}

@@ -1,0 +1,50 @@
+---
+/**
+ * The two-column inner-page section: 3fr title / 7fr content, with its own
+ * spine node. Used a dozen times across Projects, About and Contact — building
+ * it once is what keeps the rail and the padding from drifting per page.
+ */
+import Spine from './Spine.astro';
+
+interface Props {
+  title: string;
+  id?: string;
+  /** The final section: filled mute node and the rail stops. */
+  last?: boolean;
+}
+const { title, id, last = false } = Astro.props;
+---
+
+<Spine
+  size={10}
+  variant={last ? 'mute' : 'hollow'}
+  top={8}
+  lineHeight={last ? 20 : undefined}
+/>
+<section id={id} class:list={['section', { last }]}>
+  <h2>{title}</h2>
+  <div class="content"><slot /></div>
+</section>
+
+<style>
+  .section {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    gap: var(--s-32);
+    padding-bottom: var(--s-56);
+  }
+  .section.last { padding-bottom: var(--s-64); }
+  h2 {
+    font: 600 var(--t-28) / 1.15 var(--sans);
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  @media (max-width: 900px) {
+    .section {
+      grid-template-columns: 1fr;
+      gap: var(--s-16);
+      padding-bottom: var(--s-40);
+    }
+    h2 { font-size: var(--t-24); }
+  }
+</style>

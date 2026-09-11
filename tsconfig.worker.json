@@ -1,0 +1,10 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": ["src/worker.ts", "worker-configuration.d.ts"],
+  "compilerOptions": {
+    "noEmit": true,
+    // Workers runtime only — no DOM lib, so the globals cannot disagree.
+    "lib": ["ES2022"],
+    "types": []
+  }
+}

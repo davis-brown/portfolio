@@ -1,0 +1,335 @@
+---
+import { getCollection } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import Spine from '../components/Spine.astro';
+import SectionLabel from '../components/SectionLabel.astro';
+import Placeholder from '../components/Placeholder.astro';
+import { site, home, project, packages, about, links } from '../data/site';
+import { formatDate } from '../lib/date';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const fmt = formatDate;
+---
+
+<Page title={site.name} path="~/" terminal>
+  <div class="spine-grid">
+    <!-- Hero -->
+    <Spine size={18} variant="accent" top={96} />
+    <section class="hero">
+      <p class="eyebrow">{home.eyebrow}</p>
+      <h1>{home.h1}</h1>
+      <p class="lead">{home.lead}</p>
+      <div class="cta">
+        <a class="btn btn-primary" href={home.primaryCta.href}>{home.primaryCta.label}</a>
+        <a class="btn btn-outline" href={home.secondaryCta.href}>{home.secondaryCta.label}</a>
+      </div>
+    </section>
+
+    <!-- Featured project -->
+    <Spine size={14} variant="accent" top={44} />
+    <section id="projects" class="featured">
+      <SectionLabel text="Featured project">
+        <span slot="right"><span class="dot">●</span> {project.status}</span>
+      </SectionLabel>
+
+      <div class="card feature-card">
+        <div class="feature-body">
+          <h3>{project.name}</h3>
+          <p class="feature-summary">{project.summary}</p>
+          <div class="chips">
+            {project.chips.map((c) => <span class="chip">{c}</span>)}
+          </div>
+          <a class="accent-link" href="/projects">Read the case study →</a>
+        </div>
+
+        <Placeholder caption={project.mapCaption} minHeight={400} class="feature-map">
+          <span class="pin" style={`left:${project.mapPin.left}; top:${project.mapPin.top}`}></span>
+          <span class="pin ring" style={`left:${project.mapPin.left}; top:${project.mapPin.top}`}></span>
+          <span
+            class="pin-label"
+            style={`left:calc(${project.mapPin.left} + 18px); top:calc(${project.mapPin.top} - 8px)`}
+          >{project.mapPin.label}</span>
+        </Placeholder>
+      </div>
+
+      <div class="packages">
+        {
+          packages.map((p) => (
+            <a class="card pkg" href="/projects">
+              <div class="pkg-top">
+                <span class="pkg-folder">{p.folder}</span>
+                <span class="pkg-tech">{p.tech}</span>
+              </div>
+              <div class="pkg-title">{p.title}</div>
+              <div class="pkg-body">{p.body}</div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Writing -->
+    <Spine size={10} variant="hollow" top={80} />
+    <section id="writing" class="writing">
+      <SectionLabel text="Writing" mb={8}>
+        <a slot="right" class="all-posts" href="/writing">All posts →</a>
+      </SectionLabel>
+
+      {
+        posts.map((post) => (
+          <a class="post-row" href={`/writing/${post.id}`}>
+            <span class="post-title">{post.data.title}</span>
+            <span class="post-meta">
+              {fmt(post.data.date)} · {post.data.minutes} min
+            </span>
+          </a>
+        ))
+      }
+    </section>
+
+    <!-- About -->
+    <Spine size={10} variant="hollow" top={80} />
+    <section id="about" class="about">
+      <SectionLabel text="About" />
+      <div class="about-grid">
+        <Placeholder caption="[ portrait ]" aspect="4/5" rounded bordered />
+        <div class="about-body">
+          <h3>{about.h1}</h3>
+          <p class="about-bio">{about.bioShort}</p>
+          <dl class="about-dl">
+            {
+              about.quickStack.map((row) => (
+                <>
+                  <dt>{row.term}</dt>
+                  <dd>{row.value}</dd>
+                </>
+              ))
+            }
+            <dt>now</dt>
+            <dd><span class="dot">●</span> {about.now}</dd>
+          </dl>
+          <a class="accent-link" href="/about">More about me →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <Spine size={10} variant="mute" top={104} lineHeight={112} />
+    <section id="contact" class="contact">
+      <SectionLabel text="Contact" />
+      <p class="contact-intro">{home.contactIntro}</p>
+      <a class="email" href={`mailto:${site.email}`}>{site.email}</a>
+      <div class="pills">
+        <a class="pill" href={links.github} rel="me noopener">GitHub ↗</a>
+        <a class="pill" href={links.linkedin} rel="me noopener">LinkedIn ↗</a>
+        <a class="pill" href={links.resume} download>Résumé (PDF) ↓</a>
+      </div>
+    </section>
+  </div>
+</Page>
+
+<style>
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero { padding: var(--s-80) 0 var(--s-72); }
+  .hero .eyebrow { margin-bottom: var(--s-20); }
+  h1 {
+    font: 600 var(--t-80) / 1.02 var(--sans);
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+    max-width: 14ch;
+  }
+  .hero .lead { margin-top: var(--s-28); }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-12);
+    margin-top: var(--s-36);
+  }
+
+  /* ── Featured ─────────────────────────────────────────────────────── */
+  .featured { padding-top: var(--s-32); }
+  .feature-card {
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+  }
+  .feature-body {
+    padding: var(--s-36) var(--s-32);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-20);
+  }
+  .feature-body h3 {
+    font: 600 var(--t-48) / 1 var(--sans);
+    letter-spacing: -0.03em;
+  }
+  .feature-summary { font: var(--t-18) / 1.55 var(--sans); }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--s-8); }
+  .feature-body .accent-link { margin-top: auto; }
+
+  .feature-card :global(.feature-map) { border-left: 1px solid var(--line); }
+  .pin {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--acc);
+  }
+  .pin.ring { animation: pulse 1.8s ease-out infinite; }
+  .pin-label {
+    position: absolute;
+    font: var(--t-12) / 1.2 var(--mono);
+    background: var(--acc);
+    color: var(--acc-ink);
+    padding: 4px var(--s-8);
+    border-radius: var(--r-chip);
+    white-space: nowrap;
+  }
+
+  .packages {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-16);
+    margin-top: var(--s-16);
+  }
+  .pkg {
+    padding: var(--s-22);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-8);
+  }
+  .pkg:hover { color: inherit; }
+  .pkg-top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-12);
+    font: var(--t-13) / 1.2 var(--mono);
+  }
+  .pkg-folder { color: var(--acc); }
+  .pkg-tech { color: var(--mute); }
+  .pkg-title {
+    font: 600 var(--t-18) / 1.3 var(--sans);
+    letter-spacing: -0.01em;
+  }
+  .pkg-body {
+    font: var(--t-15) / 1.5 var(--sans);
+    color: var(--mute);
+  }
+
+  /* ── Writing ──────────────────────────────────────────────────────── */
+  .writing { padding-top: var(--s-72); }
+  .all-posts {
+    font: var(--t-15) / 1.2 var(--sans);
+    color: var(--acc);
+  }
+  .post-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--s-24);
+    align-items: baseline;
+    padding: var(--s-22) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .post-title {
+    font: 500 var(--t-22) / 1.3 var(--sans);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .post-meta {
+    font: var(--t-14) / 1.2 var(--mono);
+    color: var(--mute);
+    white-space: nowrap;
+  }
+  .post-row:hover .post-meta { color: var(--acc); }
+
+  /* ── About ────────────────────────────────────────────────────────── */
+  .about { padding-top: var(--s-72); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    gap: var(--s-32);
+  }
+  .about-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-20);
+  }
+  .about-body h3 {
+    font: 600 var(--t-36) / 1.1 var(--sans);
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .about-bio {
+    font: var(--t-18) / 1.6 var(--sans);
+    color: var(--mute);
+  }
+  .about-dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-10) var(--s-24);
+    font: var(--t-15) / 1.5 var(--sans);
+    border-top: 1px solid var(--line);
+    padding-top: var(--s-20);
+  }
+  .about-dl dt {
+    color: var(--mute);
+    font: var(--t-13) / 1.5 var(--mono);
+    padding-top: 3px;
+  }
+
+  /* ── Contact ──────────────────────────────────────────────────────── */
+  .contact { padding: var(--s-88) 0 var(--s-64); }
+  .contact-intro {
+    margin-bottom: 18px;
+    font: var(--t-20) / 1.5 var(--sans);
+    color: var(--mute);
+    max-width: 50ch;
+  }
+  .email {
+    font: 600 var(--t-64) / 1.1 var(--sans);
+    letter-spacing: -0.04em;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 10px;
+    text-decoration-color: var(--acc);
+    word-break: break-all;
+  }
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-8);
+    margin-top: var(--s-32);
+  }
+
+  /* ── Responsive ───────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .hero { padding: var(--s-56) 0 var(--s-48); }
+    h1 { font-size: 48px; max-width: 18ch; }
+    .feature-card { grid-template-columns: 1fr; }
+    .feature-card :global(.feature-map) {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+      min-height: 300px;
+      order: -1;
+    }
+    .feature-body h3 { font-size: var(--t-36); }
+    .packages { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-grid :global(.ph) { max-width: 260px; }
+    .contact { padding: var(--s-64) 0 var(--s-56); }
+    .email { font-size: 32px; }
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 38px; }
+    .post-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .post-title { font-size: var(--t-20); }
+    .email { font-size: 26px; }
+  }
+</style>

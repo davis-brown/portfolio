@@ -1,0 +1,110 @@
+---
+/**
+ * Easter-egg shell in the footer.
+ *
+ * Deliberately not a React island: it is ~60 lines of trivial DOM state, and
+ * hydrating it would ship ~190KB of React runtime to every visitor for a joke
+ * most of them will never type into. The intro lines render server-side, so it
+ * looks right before (and without) JS.
+ */
+import '../styles/terminal.css';
+import { site } from '../data/site';
+---
+
+<div class="term" data-term-email={site.email}>
+  <div class="term-inner">
+    <div class="term-hint">
+      <span>Optional: there’s a small terminal here for the curious. Type <code>help</code>.</span>
+      <span>Enter to run</span>
+    </div>
+
+    <div class="term-out" data-term-out aria-live="polite">
+      <div class="term-line"><span class="term-prefix">$</span><span style="color:var(--ink)">help</span></div>
+      <div class="term-line"><span class="term-prefix"> </span><span style="color:var(--mute)">whoami · ls · open pull-up · theme · clear — this shell is decorative but real</span></div>
+    </div>
+
+    <div class="term-row" data-term-row>
+      <span aria-hidden="true">$</span>
+      <label class="sr-only" for="term-input">Terminal command</label>
+      <input
+        id="term-input"
+        class="term-input"
+        placeholder="help"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        data-term-input
+      />
+    </div>
+  </div>
+</div>
+
+<script>
+  const MAX_LINES = 6;
+
+  const out = document.querySelector<HTMLElement>('[data-term-out]');
+  const input = document.querySelector<HTMLInputElement>('[data-term-input]');
+  const row = document.querySelector<HTMLElement>('[data-term-row]');
+  const email =
+    document.querySelector<HTMLElement>('[data-term-email]')?.dataset.termEmail ?? '';
+
+  if (out && input && row) {
+    const push = (prefix: string, text: string, color = 'var(--mute)') => {
+      const line = document.createElement('div');
+      line.className = 'term-line';
+
+      const p = document.createElement('span');
+      p.className = 'term-prefix';
+      p.textContent = prefix;
+
+      const t = document.createElement('span');
+      t.style.color = color;
+      t.textContent = text; // textContent, not innerHTML — input is echoed back
+
+      line.append(p, t);
+      out.append(line);
+
+      while (out.children.length > MAX_LINES) out.firstElementChild?.remove();
+    };
+
+    const run = (raw: string) => {
+      const c = raw.trim().toLowerCase();
+      push('$', raw, 'var(--ink)');
+
+      if (c === 'help') {
+        push(' ', 'whoami · ls · open pull-up · theme · clear');
+      } else if (c === 'whoami') {
+        push(' ', 'davis brown — senior software engineer, full-stack. go · postgis · expo.');
+      } else if (c === 'ls') {
+        push(' ', 'projects/  about.md  writing/  contact.md  .secrets');
+      } else if (c === 'cat .secrets') {
+        push(' ', 'nice try. → ' + email, 'var(--acc)');
+      } else if (c.startsWith('open')) {
+        push(' ', 'opening pull-up → /projects', 'var(--acc)');
+        setTimeout(() => window.location.assign('/projects'), 400);
+      } else if (c === 'theme') {
+        // Reuse the toggle's persistence rather than reimplementing it.
+        const next = window.__toggleTheme ? window.__toggleTheme() : 'dark';
+        push(' ', 'theme → ' + next, 'var(--acc)');
+      } else if (c === 'clear') {
+        out.replaceChildren();
+      } else if (c === 'sudo hire davis') {
+        push(' ', 'permission granted. check your inbox.', 'var(--acc)');
+      } else if (c) {
+        push(' ', 'command not found: ' + c + '  (try help)');
+      }
+
+      input.value = '';
+    };
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        run(input.value);
+      }
+    });
+
+    // Clicking anywhere on the prompt row focuses the input.
+    row.addEventListener('click', () => input.focus());
+  }
+</script>

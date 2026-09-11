@@ -1,0 +1,83 @@
+---
+import '@fontsource-variable/instrument-sans';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Terminal from '../components/Terminal.astro';
+import { site } from '../data/site';
+
+interface Props {
+  /** Page <title>; the site name is appended. */
+  title: string;
+  description?: string;
+  /** Mono path shown next to the brand: '~/', '~/projects', … */
+  path?: string;
+  /** Which nav item renders as active. */
+  active?: string;
+  /** The terminal easter egg lives on the home page only. */
+  terminal?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  path = '~/',
+  active,
+  terminal = false,
+} = Astro.props;
+
+const fullTitle = title === site.name ? title : `${title} — ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} — Writing`} href="/rss.xml" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {/*
+      Blocking, inline, and deliberately first: this stamps data-theme before
+      the first paint. Deferring it flashes the wrong theme on every reload.
+    */}
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var theme =
+            saved === 'dark' || saved === 'light'
+              ? saved
+              : window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light'
+                : 'dark';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          /* private mode / storage blocked — the dark default in the markup stands */
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header path={path} active={active} />
+    <main id="main">
+      <slot />
+    </main>
+    {terminal && <Terminal />}
+    <SiteFooter />
+  </body>
+</html>

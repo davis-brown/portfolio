@@ -1,0 +1,130 @@
+---
+import { getCollection, render } from 'astro:content';
+import Page from '../../layouts/Page.astro';
+import Spine from '../../components/Spine.astro';
+import { formatDate } from '../../lib/date';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const fmt = formatDate;
+---
+
+<Page title={post.data.title} description={post.data.summary} path="~/writing" active="Writing">
+  <div class="spine-grid">
+    <Spine size={18} variant="accent" top={80} />
+    <article class="post">
+      <p class="eyebrow">
+        <a href="/writing">writing</a> / {fmt(post.data.date)} · {post.data.minutes} min
+      </p>
+      <h1>{post.data.title}</h1>
+      <p class="lead">{post.data.summary}</p>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <a class="accent-link" href="/writing">← All posts</a>
+    </article>
+
+    <Spine size={10} variant="mute" top={8} lineHeight={20} />
+    <div></div>
+  </div>
+</Page>
+
+<style>
+  /* Article styling built from the site tokens: same scale, prose capped at
+     68ch. */
+  .post {
+    padding: var(--s-64) 0 var(--s-64);
+    max-width: 68ch;
+    min-width: 0;
+  }
+  .eyebrow { margin-bottom: var(--s-16); }
+  .eyebrow a { color: var(--acc); }
+  h1 {
+    font: 600 var(--t-48) / 1.08 var(--sans);
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .lead { margin-top: var(--s-20); }
+
+  .prose { margin: var(--s-40) 0; }
+  .prose :global(p) {
+    font: var(--t-18) / 1.7 var(--sans);
+    margin-bottom: var(--s-20);
+  }
+  .prose :global(h2) {
+    font: 600 var(--t-28) / 1.2 var(--sans);
+    letter-spacing: -0.025em;
+    margin: var(--s-40) 0 var(--s-16);
+  }
+  .prose :global(h3) {
+    font: 600 var(--t-22) / 1.3 var(--sans);
+    margin: var(--s-32) 0 var(--s-12);
+  }
+  .prose :global(a) {
+    color: var(--acc);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-bottom: var(--s-20);
+    padding-left: 1.2em;
+    list-style: revert;
+  }
+  .prose :global(li) {
+    font: var(--t-18) / 1.7 var(--sans);
+    margin-bottom: var(--s-8);
+  }
+  .prose :global(blockquote) {
+    border-left: 2px solid var(--acc);
+    padding-left: var(--s-20);
+    color: var(--mute);
+    margin: 0 0 var(--s-20);
+  }
+  .prose :global(pre) {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: var(--s-20);
+    overflow-x: auto;
+    margin-bottom: var(--s-20);
+    font-size: var(--t-14);
+    line-height: 1.6;
+  }
+  .prose :global(code) {
+    font-family: var(--mono);
+    font-size: 0.9em;
+  }
+  .prose :global(:not(pre) > code) {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-chip);
+    padding: 2px 6px;
+  }
+  .prose :global(img) {
+    border-radius: var(--r-card);
+    margin-bottom: var(--s-20);
+  }
+  .prose :global(hr) {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin: var(--s-40) 0;
+  }
+
+  @media (max-width: 900px) {
+    .post { padding: var(--s-48) 0 var(--s-56); }
+    h1 { font-size: var(--t-36); }
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 28px; }
+    .prose :global(p), .prose :global(li) { font-size: var(--t-17); }
+  }
+</style>

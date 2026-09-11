@@ -1,0 +1,103 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { site, nav } from '../data/site';
+
+interface Props {
+  path?: string;
+  active?: string;
+}
+const { path = '~/', active } = Astro.props;
+---
+
+<header class="header">
+  <div class="inner">
+    <a class="brand" href="/">
+      <span class="path">{path}</span>{site.name}
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={['nav-link', { active: active === item.label }]}
+            aria-current={active === item.label ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-16);
+    height: var(--header-h);
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--s-10);
+    font: 600 var(--t-18) / 1 var(--sans);
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  .path {
+    font: var(--t-13) / 1 var(--mono);
+    color: var(--acc);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font: var(--t-15) / 1 var(--sans);
+  }
+  .nav-link {
+    padding: 12px 14px;
+    border-radius: var(--r-btn);
+  }
+  .nav-link:hover { background: var(--bg2); }
+  .nav-link.active { background: var(--bg2); }
+
+  /* Below 600px the single row overflows, so the nav drops to its own row
+     rather than hiding links behind a menu. */
+  @media (max-width: 600px) {
+    .inner {
+      flex-direction: column;
+      align-items: stretch;
+      height: auto;
+      gap: 0;
+      padding: var(--s-10) var(--gutter);
+    }
+    .brand { justify-content: flex-start; padding-bottom: var(--s-10); }
+    .nav {
+      justify-content: space-between;
+      gap: 2px;
+      font-size: var(--t-14);
+      border-top: 1px solid var(--line);
+      padding-top: var(--s-8);
+      margin: 0 calc(var(--gutter) * -1);
+      padding-left: var(--gutter);
+      padding-right: var(--gutter);
+    }
+    .nav-link { padding: 8px 6px; }
+  }
+</style>

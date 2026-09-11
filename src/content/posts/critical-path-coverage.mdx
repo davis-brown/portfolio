@@ -1,0 +1,28 @@
+---
+title: "Driving critical-path coverage to 95% — and what it didn't catch"
+summary: "Introducing test-driven development to a team that shipped fine without it, and the bugs that walked straight past the suite anyway."
+date: 2026-08-21
+minutes: 9
+draft: false
+---
+
+[ PLACEHOLDER — the real post goes here. The title and summary above are a
+starting point drawn from work you have actually shipped; rewrite or delete. ]
+
+## A heading
+
+Body copy renders with the site's type tokens: 18px, 1.7 line height, capped at
+about 68ch so a paragraph stays readable.
+
+```ts
+// Code blocks scroll horizontally rather than widening the page.
+const resolvers = {
+  Query: {
+    employee: (_: unknown, { id }: { id: string }, ctx: Context) =>
+      ctx.loaders.employee.load(id),
+  },
+};
+```
+
+Another paragraph, so the spacing between blocks stays visible while the design
+is still being checked.

@@ -1,0 +1,62 @@
+---
+/** Inner-page hero: eyebrow + 64px H1 + optional lead, with the 18px accent node. */
+import Spine from './Spine.astro';
+
+interface Props {
+  eyebrow?: string;
+  /** Renders the eyebrow with a leading accent dot. */
+  eyebrowDot?: boolean;
+  title: string;
+  lead?: string;
+  /** Cap the H1 width, e.g. '16ch' on Contact. */
+  titleWidth?: string;
+}
+const { eyebrow, eyebrowDot = false, title, lead, titleWidth } = Astro.props;
+const hasAside = Astro.slots.has('aside');
+---
+
+<Spine size={18} variant="accent" top={80} />
+<section class="hero">
+  <div class:list={['hero-grid', { split: hasAside }]}>
+    <div>
+      {
+        eyebrow && (
+          <p class="eyebrow">
+            {eyebrowDot && <span class="dot">●</span>}{eyebrowDot ? ' ' : ''}{eyebrow}
+          </p>
+        )
+      }
+      <h1 style={titleWidth ? `max-width: ${titleWidth}` : undefined}>{title}</h1>
+      {lead && <p class="lead">{lead}</p>}
+      <slot />
+    </div>
+    {hasAside && <div class="aside"><slot name="aside" /></div>}
+  </div>
+</section>
+
+<style>
+  .hero { padding: var(--s-64) 0 var(--s-56); }
+  .hero-grid.split {
+    display: grid;
+    grid-template-columns: 7fr 4fr;
+    gap: var(--s-40);
+    align-items: start;
+  }
+  .eyebrow { margin-bottom: var(--s-16); }
+  h1 {
+    font: 600 var(--t-64) / 1.02 var(--sans);
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .lead { margin-top: var(--s-20); }
+
+  @media (max-width: 900px) {
+    .hero { padding: var(--s-48) 0 var(--s-40); }
+    .hero-grid.split { grid-template-columns: 1fr; gap: var(--s-32); }
+    h1 { font-size: 40px; }
+    .aside { max-width: 260px; }
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 34px; }
+  }
+</style>
