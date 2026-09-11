@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
-    "check": "wrangler types && astro check && tsc -p tsconfig.worker.json",
+    "check": "astro check",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
