@@ -213,7 +213,7 @@ export const contact = {
    * fine; it only authorises delivery to the address you registered.
    * Until this is set, the form validates and reports that it is not wired.
    */
-  accessKey: '',
+  accessKey: '2b52d2d4-0016-4234-bfb6-877a13733be3',
   /** Subject line on the mail that reaches your inbox. */
   formSubject: 'Portfolio contact — davisbrown.dev',
 } as const;
