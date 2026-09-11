@@ -206,11 +206,16 @@ export const contact = {
   h1: 'Let’s talk about the role, or about maps.',
   formHint: 'or just email — the form goes to the same inbox',
   success: 'Thanks — that’s in my inbox. I’ll reply within a day.',
+  formEndpoint: 'https://api.web3forms.com/submit',
   /**
-   * Same-origin endpoint handled by src/worker.ts, which sends via the
-   * Cloudflare Email Service binding. No third party, no API key.
+   * PLACEHOLDER — your Web3Forms access key (web3forms.com, enter your email
+   * and it is mailed to you). It is designed to be public, so committing it is
+   * fine; it only authorises delivery to the address you registered.
+   * Until this is set, the form validates and reports that it is not wired.
    */
-  formEndpoint: '/api/contact',
+  accessKey: '',
+  /** Subject line on the mail that reaches your inbox. */
+  formSubject: 'Portfolio contact — davisbrown.dev',
 } as const;
 
 /* ── Terminal easter egg ──────────────────────────────────────────────── */

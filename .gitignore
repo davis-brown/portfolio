@@ -7,4 +7,3 @@ dist/
 
 # Cloudflare
 .wrangler/
-worker-configuration.d.ts
