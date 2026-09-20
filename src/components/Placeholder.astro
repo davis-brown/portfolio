@@ -9,7 +9,8 @@
  * toggle instantly rather than waiting on a media query the toggle overrides.
  */
 interface Props {
-  caption: string;
+  /** Shown only when `src` is absent. */
+  caption?: string;
   src?: string;
   srcDark?: string;
   alt?: string;
@@ -20,7 +21,7 @@ interface Props {
   class?: string;
 }
 const {
-  caption,
+  caption = '',
   src,
   srcDark,
   alt = '',

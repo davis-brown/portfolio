@@ -20,7 +20,7 @@ import { site } from '../data/site';
 
     <div class="term-out" data-term-out aria-live="polite">
       <div class="term-line"><span class="term-prefix">$</span><span style="color:var(--ink)">help</span></div>
-      <div class="term-line"><span class="term-prefix"> </span><span style="color:var(--mute)">whoami · ls · open pull-up · theme · clear — this shell is decorative but real</span></div>
+      <div class="term-line"><span class="term-prefix"> </span><span style="color:var(--mute)">whoami · ls · open pull-up · theme · clear. this shell is decorative but real</span></div>
     </div>
 
     <div class="term-row" data-term-row>
@@ -74,7 +74,7 @@ import { site } from '../data/site';
       if (c === 'help') {
         push(' ', 'whoami · ls · open pull-up · theme · clear');
       } else if (c === 'whoami') {
-        push(' ', 'davis brown — senior software engineer, full-stack. go · postgis · expo.');
+        push(' ', 'davis brown, senior software engineer, full-stack. go · postgis · expo.');
       } else if (c === 'ls') {
         push(' ', 'projects/  about.md  writing/  contact.md  .secrets');
       } else if (c === 'cat .secrets') {
