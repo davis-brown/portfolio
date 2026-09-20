@@ -7,7 +7,7 @@ export const site = {
   location: 'Oklahoma City · UTC−5',
   year: 2026,
   description:
-    'Senior full-stack engineer — five years on enterprise HR and AI-assisted products in React, TypeScript, GraphQL, PHP, C# and Go. Builder of Pull Up, a live map of pickup basketball.',
+    'Senior full-stack engineer with five years on enterprise HR and AI-assisted products in React, TypeScript, GraphQL, PHP, C# and Go. Builder of Pull Up, a live map of pickup basketball.',
 } as const;
 
 export const nav = [
@@ -34,7 +34,7 @@ export const home = {
   eyebrow: site.tagline,
   h1: 'I ship full-stack products, end to end.',
   lead:
-    'Go on the server, React Native in your hand, PostGIS underneath. I own the schema, the API, and the gesture — most recently on Pull Up, a live map of pickup basketball.',
+    'Go on the server, React Native in your hand, PostGIS underneath. I own the schema, the API, and the gesture, most recently on Pull Up, a live map of pickup basketball.',
   primaryCta: { label: 'See the project →', href: '/projects' },
   secondaryCta: { label: 'Get in touch', href: '/contact' },
   contactIntro:
@@ -50,7 +50,6 @@ export const project = {
   summary:
     "Find live pickup basketball. A map of courts showing who's playing right now. Court locations are crowd-sourced and seeded from OpenStreetMap; live activity comes from geo-verified check-ins and crowd reports.",
   chips: ['Go', 'PostgreSQL + PostGIS', 'Expo · React Native', 'MapLibre', 'iOS · Android · web'],
-  mapCaption: '[ map screenshot — courts across Lower Manhattan ]',
 } as const;
 
 /** Home: the three package cards under the featured card. */
@@ -81,19 +80,18 @@ export const projectsPage = {
   eyebrow: '1 project · 3 packages · 2026',
   h1: 'Projects',
   lead:
-    'One product, built end to end. Below is the case study — what it is, how it’s built, and the decisions that mattered.',
+    'One product, built end to end. Below is the case study: what it is, how it’s built, and the decisions that mattered.',
 
   tiles: [
-    { term: 'role', value: 'Sole engineer — schema to gesture' },
+    { term: 'role', value: 'Sole engineer, schema to gesture' },
     { term: 'server', value: 'Go · chi · pgx + sqlc · goose · PostGIS' },
     { term: 'app', value: 'Expo · React Native · MapLibre' },
     { term: 'data', value: 'OpenStreetMap seed · OpenFreeMap tiles · 0 API keys' },
   ],
 
-  // PLACEHOLDER — two real paragraphs on the problem.
   problem: [
-    '[ the problem — what was broken about finding a pickup game, who felt it, and why existing apps and group chats did not solve it ]',
-    '[ the problem, continued — what you decided the product had to prove, and the constraint that shaped the build ]',
+    'Knowing where the courts are is the easy half. OpenStreetMap already knows. The question that decides whether you leave the house is whether anyone is on them right now, and nothing answers it. The alternatives are a group chat that covers one court, or driving over to find out.',
+    'That made two things the product had to get right, neither of them about drawing a map. A court map with an empty first screen is worthless, so courts seed from OpenStreetMap per viewport and the map is never blank in a city it has not seen before. And a live headcount is only worth checking if it cannot be casually wrong, so check-ins are geo-verified server-side within 150 m of the court and expire on their own two hours later.',
   ],
 
   build: [
@@ -110,7 +108,7 @@ export const projectsPage = {
     {
       folder: 'data/',
       tech: 'OSM',
-      body: 'Courts seeded from OpenStreetMap, then corrected by the crowd. Tiles from OpenFreeMap — production maps with no API keys and no per-load billing.',
+      body: 'Courts seeded from OpenStreetMap, then corrected by the crowd. Tiles from OpenFreeMap: production maps with no API keys and no per-load billing.',
     },
   ],
 
@@ -123,7 +121,7 @@ export const projectsPage = {
     {
       n: '02',
       lead: 'Geo-verified check-ins',
-      body: 'A check-in only counts if the device is inside the court polygon. Trust the phone, not the user — it keeps the live count honest without any moderation queue.',
+      body: 'A check-in only counts if the device is inside the court polygon. Trust the phone, not the user. It keeps the live count honest without any moderation queue.',
     },
     {
       n: '03',
@@ -144,12 +142,12 @@ export const about = {
   eyebrow: site.tagline,
   h1: 'Senior engineer who owns the whole stack.',
   bio: [
-    'Senior full-stack engineer with five years building enterprise HR and AI-assisted products — React and TypeScript on the front, GraphQL APIs in PHP and C#, Go services underneath. I have shipped secure document and e-signature workflows against real compliance requirements, and kept production services healthy when they were not.',
-    'On my own time I build Pull Up — a live map of pickup basketball, Go and PostGIS on the server, one Expo codebase on iOS, Android and web. I work test-first, take incidents seriously, and spend as much time mentoring as writing features. What I want next is ownership of a whole path: the schema, the API and the interface, with a real user at the end of it.',
+    'Senior full-stack engineer with five years building enterprise HR and AI-assisted products: React and TypeScript on the front, GraphQL APIs in PHP and C#, Go services underneath. I have shipped secure document and e-signature workflows against real compliance requirements, and kept production services healthy when they were not.',
+    'On my own time I build Pull Up, a live map of pickup basketball: Go and PostGIS on the server, one Expo codebase on iOS, Android and web. I work test-first, take incidents seriously, and spend as much time mentoring as writing features. What I want next is ownership of a whole path: the schema, the API and the interface, with a real user at the end of it.',
   ],
   // Short version, used on the Home about block.
   bioShort:
-    'Senior full-stack engineer with five years building enterprise HR and AI-assisted products — React and TypeScript on the front, GraphQL APIs in PHP and C#, Go services underneath. I work test-first, take incidents seriously, and mentor as much as I ship.',
+    'Senior full-stack engineer with five years building enterprise HR and AI-assisted products: React and TypeScript on the front, GraphQL APIs in PHP and C#, Go services underneath. I work test-first, take incidents seriously, and mentor as much as I ship.',
 
   stack: [
     { term: 'languages', value: 'TypeScript · PHP · C# · Go · SQL' },
@@ -166,23 +164,23 @@ export const about = {
 
   experience: [
     {
-      years: 'Jun 2026 — now',
-      role: 'Pull Up — founder & sole engineer',
+      years: 'Jun 2026 to now',
+      role: 'Pull Up, founder & sole engineer',
       note: 'Schema to gesture: Go API, PostgreSQL + PostGIS, Expo app on iOS, Android and web.',
     },
     {
-      years: '2025 — 2026',
-      role: 'Senior Software Developer — Paycom',
+      years: '2025 to 2026',
+      role: 'Senior Software Developer, Paycom',
       note: 'AI-assisted chat: React frontend, GraphQL APIs in PHP and C#, Go platform services. Mentored junior developers across teams.',
     },
     {
-      years: '2021 — 2025',
-      role: 'Software Developer — Paycom',
+      years: '2021 to 2025',
+      role: 'Software Developer, Paycom',
       note: 'Secure document upload, e-signature and confidential data workflows. Introduced TDD and took coverage on critical paths to 95%.',
     },
     {
       years: '2021',
-      role: 'BS Computer Science with Cybersecurity — Oklahoma Christian University',
+      role: 'BS Computer Science with Cybersecurity, Oklahoma Christian University',
       note: 'Recipient, Founders’ Scholarship.',
     },
   ],
@@ -203,8 +201,8 @@ export const writing = {
 export const contact = {
   eyebrow: 'Open to senior full-stack roles · replies within a day',
   h1: 'Let’s talk about the role, or about maps.',
-  formHint: 'or just email — the form goes to the same inbox',
-  success: 'Thanks — that’s in my inbox. I’ll reply within a day.',
+  formHint: 'or just email; the form goes to the same inbox',
+  success: 'Thanks, that’s in my inbox. I’ll reply within a day.',
   formEndpoint: 'https://api.web3forms.com/submit',
   /**
    * PLACEHOLDER — your Web3Forms access key (web3forms.com, enter your email
@@ -214,7 +212,7 @@ export const contact = {
    */
   accessKey: '2b52d2d4-0016-4234-bfb6-877a13733be3',
   /** Subject line on the mail that reaches your inbox. */
-  formSubject: 'Portfolio contact — davisbrown.dev',
+  formSubject: 'Portfolio contact from davisbrown.dev',
 } as const;
 
 /* ── Terminal easter egg ──────────────────────────────────────────────── */
