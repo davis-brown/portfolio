@@ -4,6 +4,7 @@ import Spine from '../components/Spine.astro';
 import Section from '../components/Section.astro';
 import SectionLabel from '../components/SectionLabel.astro';
 import Placeholder from '../components/Placeholder.astro';
+import ArchitectureDiagram from '../components/ArchitectureDiagram.astro';
 import InfoTile from '../components/InfoTile.astro';
 import { project, projectsPage, links } from '../data/site';
 ---
@@ -84,12 +85,7 @@ import { project, projectsPage, links } from '../data/site';
             </div>
           ))
         }
-        <Placeholder
-          caption="[ architecture diagram: app → API → PostGIS, tiles from OpenFreeMap ]"
-          minHeight={300}
-          rounded
-          bordered
-        />
+        <ArchitectureDiagram />
       </div>
     </Section>
 
