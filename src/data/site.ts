@@ -21,11 +21,8 @@ export const links = {
   github: 'https://github.com/davis-brown',
   linkedin: 'https://www.linkedin.com/in/davisbrown245',
   resume: '/Davis_Brown_CV.pdf',
-  appStore: '#',
-  googlePlay: '#',
-  webApp: '#',
-  // PLACEHOLDER — the Pull Up repo, not the profile.
-  source: 'https://github.com/davis-brown',
+  webApp: 'https://pull-up.davisbrown.dev',
+  source: 'https://github.com/davis-brown/pull-up',
 } as const;
 
 /* ── Home ─────────────────────────────────────────────────────────────── */
