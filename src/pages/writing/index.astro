@@ -4,6 +4,7 @@ import Page from '../../layouts/Page.astro';
 import Spine from '../../components/Spine.astro';
 import SectionLabel from '../../components/SectionLabel.astro';
 import Placeholder from '../../components/Placeholder.astro';
+import WritingCover from '../../components/WritingCover.astro';
 import { writing } from '../../data/site';
 import { formatDate } from '../../lib/date';
 
@@ -46,12 +47,18 @@ const fmt = formatDate;
               <p class="summary">{featured.data.summary}</p>
               <span class="accent-link">Read →</span>
             </div>
-            <Placeholder
-              caption="[ cover image ]"
-              src={featured.data.cover}
-              minHeight={300}
-              class="feature-cover"
-            />
+            {
+              featured.data.cover ? (
+                <Placeholder
+                  src={featured.data.cover}
+                  alt=""
+                  minHeight={300}
+                  class="feature-cover"
+                />
+              ) : (
+                <div class="feature-cover cover-slot"><WritingCover /></div>
+              )
+            }
           </a>
         )
       }
@@ -122,6 +129,11 @@ const fmt = formatDate;
   }
   .feature .accent-link { margin-top: auto; }
   .feature :global(.feature-cover) { border-left: 1px solid var(--line); }
+  .cover-slot {
+    position: relative;
+    min-height: 300px;
+    overflow: hidden;
+  }
 
   /* ── All posts ────────────────────────────────────────────────────── */
   .all { padding-bottom: var(--s-64); }
