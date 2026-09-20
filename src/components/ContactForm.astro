@@ -38,7 +38,7 @@ const configured = Boolean(contact.accessKey);
     <textarea
       id="cf-message"
       name="message"
-      placeholder="Role, team, timeline — or just what you're building."
+      placeholder="Role, team, timeline, or just what you're building."
       required></textarea>
     <p class="error" data-error-for="message" hidden></p>
   </div>
@@ -198,7 +198,7 @@ const configured = Boolean(contact.accessKey);
       if (form.dataset.configured !== 'true') {
         e.preventDefault();
         status.textContent =
-          'Form not configured yet — set contact.accessKey in src/data/site.ts.';
+          'Form not configured yet. Set contact.accessKey in src/data/site.ts.';
         status.hidden = false;
         return;
       }
