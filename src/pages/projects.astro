@@ -33,13 +33,32 @@ import { project, projectsPage, links } from '../data/site';
       <h3>{project.name}</h3>
       <p class="case-summary">{project.summary}</p>
 
-      <Placeholder
-        caption="[ hero image — three app screens: map, court detail, check-in ]"
-        minHeight={460}
-        rounded
-        bordered
-        class="case-hero"
-      />
+      <div class="case-hero screens">
+        {
+          [
+            { name: 'map', alt: 'The pull-up map, showing court pins across Lower Manhattan' },
+            { name: 'court', alt: 'A court detail screen: hoops, lights, surface and live headcount' },
+            { name: 'search', alt: 'Searching for a court or neighbourhood by name' },
+          ].map((s) => (
+            <figure class="screen">
+              <img
+                class="theme-light"
+                src={`/images/pull-up/phone-${s.name}-light.webp`}
+                alt={s.alt}
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                class="theme-dark"
+                src={`/images/pull-up/phone-${s.name}-dark.webp`}
+                alt={s.alt}
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          ))
+        }
+      </div>
 
       <div class="tiles">
         {projectsPage.tiles.map((t) => <InfoTile term={t.term} value={t.value} />)}
@@ -126,6 +145,34 @@ import { project, projectsPage, links } from '../data/site';
     margin-bottom: var(--s-32);
   }
   .case :global(.case-hero) { margin-bottom: var(--s-16); }
+  /* Three phone captures side by side. They are real screenshots at 3x, so
+     they are constrained by width and allowed to keep their own aspect. */
+  .screens {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-16);
+    align-items: start;
+  }
+  .screen {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    background: var(--bg2);
+  }
+  .screen img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* Dark ships first, so light is the override — matches Placeholder. */
+  .screen .theme-light { display: none; }
+  :global([data-theme='light']) .screen .theme-light { display: block; }
+  :global([data-theme='light']) .screen .theme-dark { display: none; }
+
+  @media (max-width: 720px) {
+    .screens { grid-template-columns: 1fr; }
+  }
   .tiles {
     display: grid;
     grid-template-columns: repeat(4, 1fr);

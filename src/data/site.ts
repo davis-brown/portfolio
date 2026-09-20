@@ -50,8 +50,7 @@ export const project = {
   summary:
     "Find live pickup basketball. A map of courts showing who's playing right now. Court locations are crowd-sourced and seeded from OpenStreetMap; live activity comes from geo-verified check-ins and crowd reports.",
   chips: ['Go', 'PostgreSQL + PostGIS', 'Expo · React Native', 'MapLibre', 'iOS · Android · web'],
-  mapCaption: '[ map screenshot — courts near Mission District ]',
-  mapPin: { label: 'Dolores · 8 playing', left: '34%', top: '46%' },
+  mapCaption: '[ map screenshot — courts across Lower Manhattan ]',
 } as const;
 
 /** Home: the three package cards under the featured card. */
