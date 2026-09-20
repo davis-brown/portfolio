@@ -3,10 +3,15 @@
  * Image slot. Renders a striped placeholder with a bracketed caption until a
  * real asset is passed in `src` — at which point the caption and the stripes
  * disappear with no markup change at the call site.
+ *
+ * `srcDark` pairs a dark-mode capture with the light one. Both are rendered and
+ * swapped in CSS on the `data-theme` attribute, so the image tracks the theme
+ * toggle instantly rather than waiting on a media query the toggle overrides.
  */
 interface Props {
   caption: string;
   src?: string;
+  srcDark?: string;
   alt?: string;
   minHeight?: number;
   aspect?: string;
@@ -17,6 +22,7 @@ interface Props {
 const {
   caption,
   src,
+  srcDark,
   alt = '',
   minHeight,
   aspect,
@@ -35,7 +41,20 @@ const style = [
   class:list={['ph', className, { rounded, bordered, empty: !src }]}
   style={style}
 >
-  {src ? <img src={src} alt={alt} /> : <span class="caption">{caption}</span>}
+  {
+    src ? (
+      srcDark ? (
+        <>
+          <img class="theme-light" src={src} alt={alt} loading="lazy" decoding="async" />
+          <img class="theme-dark" src={srcDark} alt={alt} loading="lazy" decoding="async" />
+        </>
+      ) : (
+        <img src={src} alt={alt} loading="lazy" decoding="async" />
+      )
+    ) : (
+      <span class="caption">{caption}</span>
+    )
+  }
   <slot />
 </div>
 
@@ -63,4 +82,12 @@ const style = [
     height: 100%;
     object-fit: cover;
   }
+
+  /* The site ships dark and stamps data-theme before first paint, so dark is
+     the default and light is the override. Both images are in the DOM; only
+     one is ever displayed. */
+  .theme-light { display: none; }
+  .theme-dark { display: block; }
+  :global([data-theme='light']) .theme-light { display: block; }
+  :global([data-theme='light']) .theme-dark { display: none; }
 </style>

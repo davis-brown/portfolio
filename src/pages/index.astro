@@ -45,14 +45,14 @@ const fmt = formatDate;
           <a class="accent-link" href="/projects">Read the case study →</a>
         </div>
 
-        <Placeholder caption={project.mapCaption} minHeight={400} class="feature-map">
-          <span class="pin" style={`left:${project.mapPin.left}; top:${project.mapPin.top}`}></span>
-          <span class="pin ring" style={`left:${project.mapPin.left}; top:${project.mapPin.top}`}></span>
-          <span
-            class="pin-label"
-            style={`left:calc(${project.mapPin.left} + 18px); top:calc(${project.mapPin.top} - 8px)`}
-          >{project.mapPin.label}</span>
-        </Placeholder>
+        <Placeholder
+          caption={project.mapCaption}
+          src="/images/pull-up/feature-map-light.webp"
+          srcDark="/images/pull-up/feature-map-dark.webp"
+          alt="The pull-up map: basketball court pins across Lower Manhattan"
+          minHeight={400}
+          class="feature-map"
+        />
       </div>
 
       <div class="packages">
@@ -171,24 +171,6 @@ const fmt = formatDate;
   .feature-body .accent-link { margin-top: auto; }
 
   .feature-card :global(.feature-map) { border-left: 1px solid var(--line); }
-  .pin {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--acc);
-  }
-  .pin.ring { animation: pulse 1.8s ease-out infinite; }
-  .pin-label {
-    position: absolute;
-    font: var(--t-12) / 1.2 var(--mono);
-    background: var(--acc);
-    color: var(--acc-ink);
-    padding: 4px var(--s-8);
-    border-radius: var(--r-chip);
-    white-space: nowrap;
-  }
-
   .packages {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
