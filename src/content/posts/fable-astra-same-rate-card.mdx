@@ -1,0 +1,98 @@
+---
+title: "Same rate card, different bill: choosing between Fable 5.1 and Astra"
+summary: "Both models bill $10 per million input tokens. One of them still costs less, and the reason has nothing to do with the price per token."
+date: 2026-09-21
+minutes: 6
+draft: false
+---
+
+Claude Fable 5.1 and GPT-6 Astra bill at exactly the same rate: $10 per million
+input tokens, $50 per million output. If you are comparing sticker prices, there
+is nothing to compare.
+
+So it was strange to read Artificial Analysis put Astra at parity with Fable on
+their Intelligence Index at roughly 40% of the cost, and at about 60% on the
+Coding Agent Index. Same rate, materially smaller bill.
+
+The gap is token efficiency. Reasoning models spend a variable number of tokens
+thinking before they answer, and that count, not the rate, is the line item that
+moves. It means you cannot forecast spend from a pricing page. You have to
+measure tokens per completed task on your own workload, which is a different and
+much less convenient exercise than reading two numbers off a table.
+
+## On code, it is closer to a tie than the launch posts suggest
+
+Deep SWE and Frontier Code put the two at roughly the same level. Terminal Bench
+4.0 is where Astra separates, at about 57.9% against Fable's 55.8%, with GPT-5.6
+Sol back at 37.3%.
+
+That last comparison is the useful one. The generational jump is large; the gap
+between the two current frontier models is about two points on one benchmark.
+Two points is not an architecture decision. If you are choosing between these
+because of coding benchmarks, you are choosing on noise.
+
+## Where they actually diverge
+
+The interesting differences are not on the coding leaderboards.
+
+Every's review landed on a split verdict: Fable for writing, for long documents,
+and for analysis you have to defend. Astra for math, for agents that work inside
+applications and fill forms, and for short tasks at volume.
+
+The sharpest single result I saw was Andon Labs running both on Vending-Bench, a
+long-horizon business simulation. Astra finished with an average bank balance of
+$15,515 against Fable's $5,422. Nearly three times, on a task that rewards
+staying coherent over a long run rather than being right once.
+
+If you are building something agentic that has to hold a thread across many
+steps, that margin is hard to argue with.
+
+## The failure mode matters more than the score
+
+The detail I keep coming back to is not a number. Reviewers reported that
+Fable's output was easier to build on without first undoing things it had added
+unasked, while Astra was easier to steer through back and forth, though it
+needed less context up front to get moving.
+
+That is the difference between a model you brief carefully and accept, and one
+you correct as you go. Which you want is not a quality judgment. It depends
+entirely on whether a human is in the loop.
+
+For an agent running unattended at three in the morning, a model that does
+roughly the right thing and stops is worth more than one that does slightly
+better work but requires a conversation to get there. For a developer pairing
+with it interactively, the opposite.
+
+## How I would actually choose
+
+Treat it like any other dependency decision, because that is what it is.
+
+**Is a human in the loop?** If yes, steerability wins and the back and forth is
+cheap. If no, you want the model that needs the least correction, because there
+is nobody there to correct it.
+
+**Is the task long-horizon and agentic?** The Vending-Bench spread is the
+clearest signal either way that I have seen.
+
+**Does the output get defended to someone?** A summary that a person will take
+into a meeting is a different product than a form that gets filled.
+
+**Is it high volume and short?** Then measure tokens per task, not rate. That is
+where the cost difference lives, and it is workload-specific enough that
+published indices are a prior rather than a result.
+
+## The part nobody benchmarks
+
+None of this covers the things that decide whether a feature works on Monday
+morning: rate limits under real concurrency, latency variance when the provider
+is busy, and how quickly you find out when something is degraded.
+
+I have spent enough time on production incidents to be more interested in the
+shape of the failure than the height of the score. A model that is two points
+better and occasionally unavailable is worse than one that is two points worse
+and boring. Benchmarks measure the good case. Your users experience the bad one.
+
+Both of these are good enough that the benchmark is no longer the interesting
+question. Pick on failure mode, measure cost on your own traffic, and keep the
+integration loose enough that switching is a config change rather than a
+project.
