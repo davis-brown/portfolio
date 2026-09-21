@@ -212,10 +212,3 @@ export const contact = {
   formSubject: 'Portfolio contact from davisbrown.dev',
 } as const;
 
-/* ── Terminal easter egg ──────────────────────────────────────────────── */
-
-export const terminal = {
-  hint: 'Optional: there’s a small terminal here for the curious. Type',
-  hintCmd: 'help',
-  enterHint: 'Enter to run',
-} as const;
