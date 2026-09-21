@@ -43,12 +43,14 @@ route or `_headers` — those are applied by the assets runtime, not by Astro.
 Anything still marked `PLACEHOLDER` or wrapped in `[ brackets ]` is filler and
 renders visibly as such in the browser.
 
-### Still needed
+### Still open
 
-- Featured map screenshot (~7:5), Projects hero (three app screens), architecture diagram
-- Portrait (4:5), résumé PDF at `public/resume.pdf`
-- Real bio, experience rows, email, GitHub/LinkedIn/store links
-- Real posts (the four in `src/content/posts/` are placeholders)
+- More posts. `/writing` shows a featured card plus a list, and the list only
+  appears once there is more than one post.
+- App Store and Google Play links, once those listings exist. They were removed
+  rather than left pointing nowhere; adding them back is `links` in
+  [`src/data/site.ts`](src/data/site.ts) plus a button each in
+  [`src/pages/projects.astro`](src/pages/projects.astro).
 
 ### Wiring the contact form
 
@@ -61,11 +63,6 @@ fine. Until it is set, the form validates and reports that it is not configured.
 The form posts normally with JS disabled; the script adds inline validation and
 swaps in the success state without a page load. A `botcheck` honeypot is
 included.
-
-**Why not Cloudflare Email Service:** the free send path requires Email Routing
-on the apex domain, and `davisbrown.dev` already points its MX at SimpleLogin —
-enabling it would break `contact@davisbrown.dev`. Email Sending on its own would
-avoid that (it only touches a `cf-bounce` subdomain) but needs Workers Paid.
 
 ## Deploying (Cloudflare Workers)
 
