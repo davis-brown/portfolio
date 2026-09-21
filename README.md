@@ -14,8 +14,8 @@ Personal portfolio and case study site.
 | **Cloudflare Workers + static assets** | Serves `dist/` — free and unlimited. Assets-only: no Worker code runs. |
 | **Web3Forms** | Contact form delivery. Keeps the site fully static and leaves DNS alone. |
 
-No UI library, no CSS-in-JS, no state manager. The terminal and theme toggle are
-plain inline scripts; nothing is hydrated.
+No UI library, no CSS-in-JS, no state manager. The theme toggle is a plain
+inline script; nothing is hydrated.
 
 ## Commands
 

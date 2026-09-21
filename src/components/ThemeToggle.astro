@@ -50,8 +50,8 @@
       });
     }
 
-    /* Exposed so the terminal's `theme` command reuses this rather than
-       reimplementing persistence. */
+    /* Exposed globally so anything else on the page can flip the theme
+       without reimplementing persistence. */
     window.__toggleTheme = function () {
       var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', next);
