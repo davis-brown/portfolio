@@ -128,7 +128,7 @@ export const projectsPage = {
     {
       n: '04',
       lead: 'Seed, then crowd-source',
-      body: 'Two thousand courts from OpenStreetMap on day one so the map is never empty, then let players correct and add. Cold start solved with data that already existed.',
+      body: 'Courts are seeded from OpenStreetMap per viewport so the map is never empty in a city it has not seen, then players correct and add. Cold start solved with data that already existed.',
     },
   ],
 } as const;
@@ -190,7 +190,7 @@ export const about = {
 
 export const writing = {
   h1: 'Writing',
-  eyebrowSuffix: 'mostly APIs, testing and shipping',
+  eyebrowSuffix: 'on APIs, testing and the tools I build with',
 } as const;
 
 /* ── Contact page ─────────────────────────────────────────────────────── */
