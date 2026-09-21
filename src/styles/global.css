@@ -13,7 +13,7 @@
   --acc-ink: #1a1b26;
   --stripe: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 6px, transparent 6px 14px);
 
-  /* Syntax colors used by the terminal + code samples */
+  /* Syntax colors used by code samples in posts */
   --ok: #9ece6a;
   --warn: #ff9e64;
   --purple: #bb9af7;

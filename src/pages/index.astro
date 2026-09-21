@@ -14,7 +14,7 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft))
 const fmt = formatDate;
 ---
 
-<Page title={site.name} path="~/" terminal>
+<Page title={site.name} path="~/">
   <div class="spine-grid">
     <!-- Hero -->
     <Spine size={18} variant="accent" top={96} />
