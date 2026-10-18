@@ -140,7 +140,7 @@ export const about = {
   h1: 'Senior engineer who owns the whole stack.',
   bio: [
     'Senior full-stack engineer with five years building enterprise HR and AI-assisted products: React and TypeScript on the front, GraphQL APIs in PHP and C#, Go services underneath. I have shipped secure document and e-signature workflows against real compliance requirements, and kept production services healthy when they were not.',
-    'On my own time I build Pull Up, a live map of pickup basketball: Go and PostGIS on the server, one Expo codebase on iOS, Android and web. I work test-first, take incidents seriously, and spend as much time mentoring as writing features. What I want next is ownership of a whole path: the schema, the API and the interface, with a real user at the end of it.',
+    'On my own time I work on Pull Up, a live map of pickup basketball: Go and PostGIS on the server, one Expo codebase on iOS, Android and web. I work test-first, take incidents seriously, and spend as much time mentoring as writing features. What I want next is ownership of a whole path: the schema, the API and the interface, with a real user at the end of it.',
   ],
   // Short version, used on the Home about block.
   bioShort:
