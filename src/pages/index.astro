@@ -4,7 +4,7 @@ import Page from '../layouts/Page.astro';
 import Spine from '../components/Spine.astro';
 import SectionLabel from '../components/SectionLabel.astro';
 import Placeholder from '../components/Placeholder.astro';
-import { site, home, project, packages, about, links } from '../data/site';
+import { site, home, project, about, links } from '../data/site';
 import { formatDate } from '../lib/date';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft))
@@ -28,46 +28,50 @@ const fmt = formatDate;
       </div>
     </section>
 
-    <!-- Featured project -->
+    <!-- Experience -->
     <Spine size={14} variant="accent" top={44} />
-    <section id="projects" class="featured">
-      <SectionLabel text="Featured project">
+    <section id="experience" class="experience">
+      <SectionLabel text="Experience" />
+      <div class="rows">
+        {
+          about.experience.map((job) => (
+            <div class="row">
+              <span class="row-label">{job.years}</span>
+              <div>
+                <div class="row-role">{job.role}</div>
+                <div class="row-note">{job.note}</div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Side project -->
+    <Spine size={10} variant="hollow" top={80} />
+    <section id="projects" class="project">
+      <SectionLabel text="Side project">
         <span slot="right"><span class="dot">●</span> {project.status}</span>
       </SectionLabel>
 
-      <div class="card feature-card">
-        <div class="feature-body">
+      <a class="card project-card" href="/projects">
+        <div class="project-body">
           <h3>{project.name}</h3>
-          <p class="feature-summary">{project.summary}</p>
+          <p class="project-summary">{project.summary}</p>
           <div class="chips">
             {project.chips.map((c) => <span class="chip">{c}</span>)}
           </div>
-          <a class="accent-link" href="/projects">Read the case study →</a>
+          <span class="accent-link">Read the case study →</span>
         </div>
 
         <Placeholder
           src="/images/pull-up/feature-map-light.webp"
           srcDark="/images/pull-up/feature-map-dark.webp"
           alt="The pull-up map: basketball court pins across Lower Manhattan"
-          minHeight={400}
-          class="feature-map"
+          minHeight={240}
+          class="project-map"
         />
-      </div>
-
-      <div class="packages">
-        {
-          packages.map((p) => (
-            <a class="card pkg" href="/projects">
-              <div class="pkg-top">
-                <span class="pkg-folder">{p.folder}</span>
-                <span class="pkg-tech">{p.tech}</span>
-              </div>
-              <div class="pkg-title">{p.title}</div>
-              <div class="pkg-body">{p.body}</div>
-            </a>
-          ))
-        }
-      </div>
+      </a>
     </section>
 
     <!-- Writing -->
@@ -148,57 +152,53 @@ const fmt = formatDate;
     margin-top: var(--s-36);
   }
 
-  /* ── Featured ─────────────────────────────────────────────────────── */
-  .featured { padding-top: var(--s-32); }
-  .feature-card {
-    overflow: hidden;
+  /* ── Experience ───────────────────────────────────────────────────── */
+  .experience { padding-top: var(--s-32); }
+  .row {
     display: grid;
-    grid-template-columns: 5fr 7fr;
+    grid-template-columns: 130px 1fr;
+    gap: var(--s-24);
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
   }
-  .feature-body {
-    padding: var(--s-36) var(--s-32);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-20);
-  }
-  .feature-body h3 {
-    font: 600 var(--t-48) / 1 var(--sans);
-    letter-spacing: -0.03em;
-  }
-  .feature-summary { font: var(--t-18) / 1.55 var(--sans); }
-  .chips { display: flex; flex-wrap: wrap; gap: var(--s-8); }
-  .feature-body .accent-link { margin-top: auto; }
-
-  .feature-card :global(.feature-map) { border-left: 1px solid var(--line); }
-  .packages {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--s-16);
-    margin-top: var(--s-16);
-  }
-  .pkg {
-    padding: var(--s-22);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-8);
-  }
-  .pkg:hover { color: inherit; }
-  .pkg-top {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--s-12);
-    font: var(--t-13) / 1.2 var(--mono);
-  }
-  .pkg-folder { color: var(--acc); }
-  .pkg-tech { color: var(--mute); }
-  .pkg-title {
-    font: 600 var(--t-18) / 1.3 var(--sans);
-    letter-spacing: -0.01em;
-  }
-  .pkg-body {
-    font: var(--t-15) / 1.5 var(--sans);
+  .row:first-child { padding-top: 0; }
+  .row:last-child { border-bottom: 0; }
+  .row-label {
+    font: var(--t-13) / 1.6 var(--mono);
     color: var(--mute);
   }
+  .row-role { font: 600 var(--t-17) / 1.4 var(--sans); }
+  .row-note {
+    font: var(--t-15) / 1.5 var(--sans);
+    color: var(--mute);
+    margin-top: 4px;
+  }
+
+  /* ── Side project ─────────────────────────────────────────────────── */
+  .project { padding-top: var(--s-72); }
+  .project-card {
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+  }
+  .project-card:hover { color: inherit; }
+  .project-body {
+    padding: var(--s-28) var(--s-28);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-16);
+  }
+  .project-body h3 {
+    font: 600 var(--t-28) / 1.1 var(--sans);
+    letter-spacing: -0.02em;
+  }
+  .project-summary {
+    font: var(--t-16) / 1.55 var(--sans);
+    color: var(--mute);
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--s-8); }
+  .project-body .accent-link { margin-top: auto; }
+  .project-card :global(.project-map) { border-left: 1px solid var(--line); }
 
   /* ── Writing ──────────────────────────────────────────────────────── */
   .writing { padding-top: var(--s-72); }
@@ -289,15 +289,12 @@ const fmt = formatDate;
   @media (max-width: 900px) {
     .hero { padding: var(--s-56) 0 var(--s-48); }
     h1 { font-size: 48px; max-width: 18ch; }
-    .feature-card { grid-template-columns: 1fr; }
-    .feature-card :global(.feature-map) {
+    .project-card { grid-template-columns: 1fr; }
+    .project-card :global(.project-map) {
       border-left: 0;
       border-top: 1px solid var(--line);
-      min-height: 300px;
-      order: -1;
+      min-height: 200px;
     }
-    .feature-body h3 { font-size: var(--t-36); }
-    .packages { grid-template-columns: 1fr; }
     .about-grid { grid-template-columns: 1fr; }
     .about-grid :global(.ph) { max-width: 260px; }
     .contact { padding: var(--s-64) 0 var(--s-56); }
@@ -306,6 +303,7 @@ const fmt = formatDate;
 
   @media (max-width: 600px) {
     h1 { font-size: 38px; }
+    .row { grid-template-columns: 1fr; gap: 6px; }
     .post-row {
       grid-template-columns: 1fr;
       gap: 6px;
