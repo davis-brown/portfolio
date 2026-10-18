@@ -73,7 +73,7 @@ export const projectsPage = {
     {
       folder: 'server/',
       tech: 'Go',
-      body: 'A Go API on chi, typed queries via pgx + sqlc, goose migrations. PostGIS does the heavy lifting: radius search, court dedup on import, and geo-verification of check-ins against court polygons.',
+      body: 'A Go API on chi, typed queries via pgx + sqlc, goose migrations. PostGIS does the heavy lifting: radius search, distance ordering, and the distance check behind every check-in.',
     },
     {
       folder: 'app/',
@@ -96,7 +96,7 @@ export const projectsPage = {
     {
       n: '02',
       lead: 'Geo-verified check-ins',
-      body: 'A check-in only counts if the device is inside the court polygon. Trust the phone, not the user. It keeps the live count honest without any moderation queue.',
+      body: 'A check-in only counts if the phone is within 150 m of the court, measured server-side in PostGIS. It is friction against spam, not security, but it keeps casual false check-ins off the live count without a moderation queue.',
     },
     {
       n: '03',
