@@ -26,7 +26,7 @@
   /* Spacing — 8-based */
   --s-8: 8px;   --s-10: 10px; --s-12: 12px; --s-14: 14px; --s-16: 16px;
   --s-20: 20px; --s-22: 22px; --s-24: 24px; --s-28: 28px; --s-32: 32px;
-  --s-36: 36px; --s-40: 40px; --s-56: 56px; --s-64: 64px; --s-72: 72px;
+  --s-36: 36px; --s-40: 40px; --s-48: 48px; --s-56: 56px; --s-64: 64px; --s-72: 72px;
   --s-80: 80px; --s-88: 88px;
 
   /* Radii — 3 chips, 4 buttons/pills, 6 cards */
