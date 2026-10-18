@@ -1,0 +1,136 @@
+---
+title: "178 queries, no ORM: why Pull Up uses sqlc"
+summary: "The query behind the map is PostGIS, three lateral joins and thirteen optional filters. An ORM would have turned it into a raw-SQL string. sqlc kept it as SQL and still gave me types."
+date: 2026-10-18
+minutes: 6
+draft: false
+---
+
+Pull Up's Go server runs 178 queries against PostgreSQL. None of them were
+written by an ORM. Each one is a plain `.sql` file, and
+[sqlc](https://sqlc.dev) turns it into a typed Go function. This post explains
+that choice, and what it costs.
+
+## The query that decided it
+
+The main screen of the app is a map of nearby courts, each with a live
+headcount. Here is a trimmed version of the query behind it:
+
+```sql
+-- name: CourtsNearby :many
+SELECT
+    c.id, c.name,
+    ST_Y(c.location::geometry)::float8 AS lat,
+    ST_X(c.location::geometry)::float8 AS lng,
+    ST_Distance(c.location, ST_SetSRID(ST_MakePoint(sqlc.arg(lng)::float8, sqlc.arg(lat)::float8), 4326)::geography)::float8 AS distance_m,
+    ac.active_count
+FROM courts c
+LEFT JOIN LATERAL (
+    SELECT coalesce(sum(ci.party_size), 0)::int AS active_count
+    FROM check_ins ci
+    WHERE ci.court_id = c.id AND ci.checked_out_at IS NULL AND ci.expires_at > now()
+) ac ON true
+WHERE c.status <> 'rejected'
+  AND ST_DWithin(c.location, ST_SetSRID(ST_MakePoint(sqlc.arg(lng)::float8, sqlc.arg(lat)::float8), 4326)::geography, sqlc.arg(radius_m)::float8)
+  AND (sqlc.narg('indoor')::bool IS NULL OR c.indoor = sqlc.narg('indoor'))
+  AND (sqlc.narg('lit')::bool    IS NULL OR c.lighting = sqlc.narg('lit'))
+ORDER BY distance_m
+LIMIT 100;
+```
+
+The full version has two more lateral joins (the latest crowd report, the
+next scheduled run) and thirteen optional filters.
+
+None of that is unusual for a map product, but almost none of it is what an
+ORM is good at. `ST_DWithin` and `ST_Distance` are PostGIS functions. The
+lateral joins compute one aggregate per court. In most Go ORMs this query
+ends up as a raw-SQL string passed to an escape hatch, with the results
+scanned by hand. That gives you the ORM's complexity without its benefits.
+
+With sqlc, the SQL stays in charge, and Go gets the types.
+
+## What comes back
+
+sqlc reads the query, checks it against the schema built from my goose
+migrations, and generates this:
+
+```go
+type CourtsNearbyParams struct {
+	Lng      float64 `json:"lng"`
+	Lat      float64 `json:"lat"`
+	RadiusM  float64 `json:"radius_m"`
+	Indoor   *bool   `json:"indoor"`
+	Lit      *bool   `json:"lit"`
+	// ...eleven more filters
+}
+```
+
+The required arguments (`sqlc.arg`) are plain values. The optional filters
+(`sqlc.narg`) are pointers, and a nil pointer means "don't filter". The SQL
+uses the same rule: `narg IS NULL OR ...`. The query and the struct agree on
+what "optional" means, and the agreement is generated, not maintained by hand.
+
+The bigger win is what happens when the schema changes. If a migration
+renames a column and a query still uses the old name, `sqlc generate` fails.
+If a column becomes nullable, the generated field becomes a pointer and every
+caller that assumed it was always set stops compiling. I find out when I
+regenerate, not from a 500 in production.
+
+## The data rules live where you can read them
+
+Courts are seeded from OpenStreetMap and then corrected by players. Re-importing
+from OpenStreetMap must not wipe out what a player typed in. That rule lives
+in the upsert, next to the comment that explains it:
+
+```sql
+ON CONFLICT (osm_type, osm_id) DO UPDATE SET
+    name          = EXCLUDED.name,
+    location      = EXCLUDED.location,
+    -- Coalesced, unlike the columns above: a re-import of a court whose OSM
+    -- charge=* tag is missing or unparseable must not wipe a price a player
+    -- typed in.
+    fee_amount_cents = coalesce(EXCLUDED.fee_amount_cents, courts.fee_amount_cents),
+    fee_currency     = coalesce(EXCLUDED.fee_currency, courts.fee_currency),
+```
+
+In a code review, that is the line that matters, and here it is visible on
+its own. With an ORM, the same rule would be spread across a model hook or a
+conditional in the Go code that builds the update.
+
+## What it costs
+
+sqlc does not know about PostGIS. It type-checks queries against your schema,
+and it ignores `CREATE EXTENSION`, so `ST_DWithin` looks like a function that
+does not exist. The fix is a shim file that only sqlc ever reads:
+
+```sql
+-- sqlc-only schema shims. NEVER run against a real database.
+
+CREATE TYPE geography AS (dummy int);
+
+CREATE FUNCTION ST_DWithin(geography, geography, float8) RETURNS boolean AS 'SELECT NULL' LANGUAGE sql;
+CREATE FUNCTION ST_Distance(geography, geography) RETURNS float8 AS 'SELECT NULL' LANGUAGE sql;
+```
+
+It works, but it is a hand-written copy of PostGIS signatures. If I get a
+signature wrong, sqlc trusts the shim, not PostGIS, and the mistake only
+shows up when the query runs. Every new PostGIS function means one more line
+in that file. My integration tests run against a real PostGIS database for
+exactly this reason.
+
+The other cost is dynamic queries. sqlc generates one function per query, so
+there is no building a `WHERE` clause piece by piece. The `narg IS NULL OR`
+pattern is how the map's thirteen filters fit into one query. It works well,
+but the query gets long, and it would not scale to a search screen where users
+can combine fields freely.
+
+## When I would choose an ORM
+
+If the product were mostly CRUD screens over many tables, or depended on
+queries assembled at runtime, I would pick differently. The time an ORM saves
+is real when most queries are simple.
+
+Pull Up is not like that. Its most important queries are spatial, use
+aggregates, and are full of rules about whose data wins. For those, I want
+to read the SQL in review, run it in `psql`, and have the compiler tell me
+when the schema has moved underneath it. sqlc gives me all three.
