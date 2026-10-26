@@ -23,6 +23,7 @@ export const links = {
   resume: '/Davis_Brown_CV.pdf',
   webApp: 'https://pull-up.davisbrown.dev',
   source: 'https://github.com/davis-brown/pull-up',
+  cmmsSource: 'https://github.com/davis-brown/cmms',
 } as const;
 
 /* ── Home ─────────────────────────────────────────────────────────────── */
@@ -52,10 +53,10 @@ export const project = {
 /* ── Projects page ────────────────────────────────────────────────────── */
 
 export const projectsPage = {
-  eyebrow: '1 project · 3 packages · 2026',
+  eyebrow: '2 projects · 2021 to 2026',
   h1: 'Projects',
   lead:
-    'One product, built end to end. Below is the case study: what it is, how it’s built, and the decisions that mattered.',
+    'Two products, each built end to end. Below are the case studies: what they are, how they’re built, and the decisions that mattered.',
 
   tiles: [
     { term: 'role', value: 'Sole engineer, schema to gesture' },
@@ -107,6 +108,50 @@ export const projectsPage = {
       n: '04',
       lead: 'Seed, then crowd-source',
       body: 'Courts are seeded from OpenStreetMap per viewport so the map is never empty in a city it has not seen, then players correct and add. Cold start solved with data that already existed.',
+    },
+  ],
+} as const;
+
+/* ── CMMS ─────────────────────────────────────────────────────────────── */
+
+export const cmms = {
+  name: 'Church Membership Management System',
+  statusLong: 'capstone 2021 · reworked 2026',
+  summary:
+    'A member directory and event calendar for a congregation: families, groups, events and RSVPs, life events, and a printable PDF directory, with what each person can see set by their role.',
+
+  tiles: [
+    { term: 'role', value: 'One of four on the capstone; sole engineer since' },
+    { term: 'server', value: 'Node.js · Express · Sequelize · MySQL · JWT' },
+    { term: 'app', value: 'Vue 3 · Vuetify 3 · Vue Router · Vuex' },
+    { term: 'run', value: 'docker compose up · seeded demo data' },
+  ],
+
+  origin: [
+    'CMMS started in 2021 as my senior capstone at Oklahoma Christian University. Four of us built it for a local church that wanted one place for its member directory and calendar, as an Express and MySQL API and a Vue 2 single-page app, each in its own repo.',
+    'In 2026 I came back to it on my own. The app worked, but it read like a student project: two repos with no way to run them together, every member’s home address and phone number visible to every logged-in user, and a frontend on a version of Vue that had reached end of life.',
+  ],
+
+  changes: [
+    {
+      n: '01',
+      lead: 'One repo, one command',
+      body: 'Merged the backend and frontend repos into one, keeping both histories. docker compose up starts MySQL, the API and the app with sample members, families and events, and a demo login with every role.',
+    },
+    {
+      n: '02',
+      lead: 'Private by default',
+      body: 'Contact details and member notes are hidden from regular users, writes are locked to the roles that should make them, new accounts need an admin’s approval, and logins are rate-limited behind security headers.',
+    },
+    {
+      n: '03',
+      lead: 'Vue 2 to Vue 3',
+      body: 'Upgraded the frontend to Vue 3 and Vuetify 3 and updated packages with known security issues, then redesigned it with larger type and simpler wording, since many of the people using it are older.',
+    },
+    {
+      n: '04',
+      lead: 'Checked in a real browser',
+      body: 'Headless browser checks walk through login, members, families, groups, the calendar and the PDF directory as both an admin and a regular user. They found bugs the original never caught, and they now live in the repo.',
     },
   ],
 } as const;
