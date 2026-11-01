@@ -6,7 +6,7 @@ import SectionLabel from '../components/SectionLabel.astro';
 import Placeholder from '../components/Placeholder.astro';
 import ArchitectureDiagram from '../components/ArchitectureDiagram.astro';
 import InfoTile from '../components/InfoTile.astro';
-import { project, projectsPage, links } from '../data/site';
+import { project, projectsPage, cmms, links } from '../data/site';
 ---
 
 <Page
@@ -106,10 +106,64 @@ import { project, projectsPage, links } from '../data/site';
     </Section>
 
     <!-- Try it -->
-    <Section title="Try it" last>
+    <Section title="Try it">
       <div class="try">
         <a class="btn btn-primary" href={links.webApp}>Open the web app ↗</a>
         <a class="btn btn-outline" href={links.source}>Source on GitHub ↗</a>
+      </div>
+    </Section>
+
+    <!-- CMMS case study -->
+    <Spine size={14} variant="accent" top={8} />
+    <section class="case">
+      <SectionLabel text="Case study">
+        <span slot="right"><span class="dot">●</span> {cmms.statusLong}</span>
+      </SectionLabel>
+
+      <h3>{cmms.name}</h3>
+      <p class="case-summary">{cmms.summary}</p>
+
+      <div class="case-hero screens wide">
+        {
+          [
+            { name: 'families', alt: 'The families page: each family with its members, email, phone and address' },
+            { name: 'members', alt: 'The member directory, searchable, with each member’s role in the church' },
+            { name: 'groups', alt: 'Groups such as the choir and youth group, with their members' },
+          ].map((s) => (
+            <figure class="screen">
+              <img src={`/images/cmms/desktop-${s.name}.webp`} alt={s.alt} loading="lazy" decoding="async" />
+            </figure>
+          ))
+        }
+      </div>
+
+      <div class="tiles">
+        {cmms.tiles.map((t) => <InfoTile term={t.term} value={t.value} />)}
+      </div>
+    </section>
+
+    <Section title="Where it started">
+      {cmms.origin.map((p) => <p class="prose">{p}</p>)}
+    </Section>
+
+    <Section title="What I’ve changed since">
+      <ol class="decisions">
+        {
+          cmms.changes.map((d) => (
+            <li class="decision">
+              <span class="num">{d.n}</span>
+              <p>
+                <b>{d.lead}.</b> <span class="muted">{d.body}</span>
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+
+    <Section title="Try it" last>
+      <div class="try">
+        <a class="btn btn-primary" href={links.cmmsSource}>Source on GitHub ↗</a>
       </div>
     </Section>
   </div>
@@ -164,8 +218,13 @@ import { project, projectsPage, links } from '../data/site';
   :global([data-theme='light']) .screen .theme-light { display: block; }
   :global([data-theme='light']) .screen .theme-dark { display: none; }
 
+  /* Desktop captures are too wide for three across: lead one, pair the rest.
+     The app has one theme, so these show in both. */
+  .screens.wide { grid-template-columns: repeat(2, 1fr); }
+  .screens.wide .screen:first-child { grid-column: 1 / -1; }
+
   @media (max-width: 720px) {
-    .screens { grid-template-columns: 1fr; }
+    .screens, .screens.wide { grid-template-columns: 1fr; }
   }
   .tiles {
     display: grid;
