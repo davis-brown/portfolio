@@ -58,7 +58,9 @@ included.
 ## Deploying (Cloudflare Workers)
 
 Merging to `main` deploys automatically through Workers Builds (build command
-`npm run build`). `npm run deploy` still works for a manual deploy. The Worker
+`npm run build`). Pull requests and pushes to `main` run `npm run check` and
+`npm run build` in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+`npm run deploy` still works for a manual deploy. The Worker
 declares no `main`, so it is purely a static asset host — every request is free
 and no code runs.
 
