@@ -11,10 +11,10 @@ export const site = {
 } as const;
 
 export const nav = [
-  { label: 'Projects', href: '/projects' },
-  { label: 'Writing', href: '/writing' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Projects', href: '/projects/' },
+  { label: 'Writing', href: '/writing/' },
+  { label: 'About', href: '/about/' },
+  { label: 'Contact', href: '/contact/' },
 ] as const;
 
 export const links = {
@@ -33,8 +33,8 @@ export const home = {
   h1: 'I ship full-stack products, end to end.',
   lead:
     'Five years building enterprise HR and AI-assisted products: React and TypeScript on the front, GraphQL APIs in PHP and C#, Go services underneath. I own the schema, the API and the interface, and I work test-first.',
-  primaryCta: { label: 'About me →', href: '/about' },
-  secondaryCta: { label: 'Get in touch', href: '/contact' },
+  primaryCta: { label: 'About me →', href: '/about/' },
+  secondaryCta: { label: 'Get in touch', href: '/contact/' },
   contactIntro:
     'Hiring for a senior full-stack role, or want to talk maps and Go? I reply within a day.',
 } as const;

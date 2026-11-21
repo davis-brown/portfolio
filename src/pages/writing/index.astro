@@ -38,7 +38,7 @@ const fmt = formatDate;
       <SectionLabel text="Latest" />
       {
         featured && (
-          <a class="card feature" href={`/writing/${featured.id}`}>
+          <a class="card feature" href={`/writing/${featured.id}/`}>
             <div class="feature-body">
               <div class="meta">
                 {fmt(featured.data.date)} · {featured.data.minutes} min
@@ -73,7 +73,7 @@ const fmt = formatDate;
           <section class="all">
             <SectionLabel text="All posts" />
             {rest.map((post) => (
-              <a class="post-row" href={`/writing/${post.id}`}>
+              <a class="post-row" href={`/writing/${post.id}/`}>
                 <div>
                   <div class="post-title">{post.data.title}</div>
                   <div class="post-summary">{post.data.summary}</div>
