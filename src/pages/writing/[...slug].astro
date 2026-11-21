@@ -15,7 +15,7 @@ const { Content } = await render(post);
 const fmt = formatDate;
 ---
 
-<Page title={post.data.title} description={post.data.summary} path="~/writing" active="Writing">
+<Page title={post.data.title} description={post.data.summary} path="~/writing" active="Writing" published={post.data.date}>
   <div class="spine-grid">
     <Spine size={18} variant="accent" top={80} />
     <article class="post">
