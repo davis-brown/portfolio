@@ -3,7 +3,7 @@ import Page from '../layouts/Page.astro';
 import Spine from '../components/Spine.astro';
 ---
 
-<Page title="Not found" description="That page does not exist.">
+<Page title="Not found" description="That page does not exist." noindex>
   <div class="spine-grid">
     <Spine size={18} variant="accent" top={80} />
     <section class="nf">
@@ -14,7 +14,7 @@ import Spine from '../components/Spine.astro';
       </p>
       <div class="cta">
         <a class="btn btn-primary" href="/">Back home →</a>
-        <a class="btn btn-outline" href="/projects">See the project</a>
+        <a class="btn btn-outline" href="/projects/">See the project</a>
       </div>
     </section>
 

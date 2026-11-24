@@ -20,7 +20,7 @@ const fmt = formatDate;
     <Spine size={18} variant="accent" top={80} />
     <article class="post">
       <p class="eyebrow">
-        <a href="/writing">writing</a> / {fmt(post.data.date)} · {post.data.minutes} min
+        <a href="/writing/">writing</a> / {fmt(post.data.date)} · {post.data.minutes} min
       </p>
       <h1>{post.data.title}</h1>
       <p class="lead">{post.data.summary}</p>
@@ -29,7 +29,7 @@ const fmt = formatDate;
         <Content />
       </div>
 
-      <a class="accent-link" href="/writing">← All posts</a>
+      <a class="accent-link" href="/writing/">← All posts</a>
     </article>
 
     <Spine size={10} variant="mute" top={8} lineHeight={20} />

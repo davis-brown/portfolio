@@ -13,6 +13,9 @@
     "not_found_handling": "404-page"
   },
 
+  // Workers Builds runs `wrangler preview` on non-main branches, which needs this block.
+  "previews": {},
+
   "observability": {
     "enabled": true
   }

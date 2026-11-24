@@ -16,6 +16,8 @@ interface Props {
   active?: string;
   /** Publish date; marks the page as an article in its og: metadata. */
   published?: Date;
+  /** Mark the page noindex and omit canonical/og:url (e.g. the 404 page). */
+  noindex?: boolean;
 }
 
 const {
@@ -24,6 +26,7 @@ const {
   path = '~/',
   active,
   published,
+  noindex = false,
 } = Astro.props;
 
 const fullTitle = title === site.name ? title : `${title} · ${site.name}`;
@@ -36,7 +39,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <link rel="alternate" type="application/rss+xml" title={`Writing · ${site.name}`} href="/rss.xml" />
 
     <title>{fullTitle}</title>
@@ -46,7 +49,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     {published && <meta property="article:published_time" content={published.toISOString()} />}
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
+    {!noindex && <meta property="og:url" content={canonical} />}
     <meta name="twitter:card" content="summary_large_image" />
 
     {/*
