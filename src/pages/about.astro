@@ -11,7 +11,7 @@ import { about, links } from '../data/site';
     <PageHero eyebrow={about.eyebrow} title={about.h1}>
       {about.bio.map((p) => <p class="bio">{p}</p>)}
       <div class="cta">
-        <a class="btn btn-primary" href="/contact">Get in touch →</a>
+        <a class="btn btn-primary" href="/contact/">Get in touch →</a>
         <a class="btn btn-outline" href={links.resume} download>Résumé (PDF) ↓</a>
       </div>
       <Placeholder slot="aside" src="/images/portrait.jpg" alt="Davis Brown" aspect="4/5" rounded bordered />
